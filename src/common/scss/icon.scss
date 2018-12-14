@@ -1,0 +1,26 @@
+@font-face {
+  font-family: 'iconfont';  /* project id 960638 */
+  src: url('//at.alicdn.com/t/font_960638_m36zy4k21r.eot');
+  src: url('//at.alicdn.com/t/font_960638_m36zy4k21r.eot?#iefix') format('embedded-opentype'),
+  url('//at.alicdn.com/t/font_960638_m36zy4k21r.woff') format('woff'),
+  url('//at.alicdn.com/t/font_960638_m36zy4k21r.ttf') format('truetype'),
+  url('//at.alicdn.com/t/font_960638_m36zy4k21r.svg#iconfont') format('svg');
+}
+.iconfont {
+  font-family:"iconfont" !important;
+  font-size:16px;
+  font-style:normal;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+.icon-manage:before { content: "\e6a6"; }
+.icon-setting:before { content: "\e60e"; }
+.icon-logout:before { content: "\e636"; }
+.icon-actsting:before { content: "\e60f"; }
+.icon-arrowdowm:before { content: "\e60b"; }
+.icon-home:before { content: "\e690"; }
+.icon-wx:before { content: "\e62c"; }
+.icon-username:before { content: "\e6a1"; }
+.icon-password:before { content: "\e639"; }
+.icon-plus:before { content: "\e648"; }
+.icon-line:before { content: "\e605"; }
