@@ -13,19 +13,19 @@
         <el-breadcrumb separator-class="el-icon-arrow-right">
           <el-breadcrumb-item :to="{ path: '/' }"><span class="nocurrent">首页</span></el-breadcrumb-item>
           <el-breadcrumb-item><span class="nocurrent">表单管理</span></el-breadcrumb-item>
-          <el-breadcrumb-item><span>反馈表</span></el-breadcrumb-item>
+          <el-breadcrumb-item><span>施工汇报表</span></el-breadcrumb-item>
         </el-breadcrumb>
       </div>
     </div>
     <div class="operateTableBox">
       <el-table :data="tableData" border style="width: 100%;margin-top: 10px;">
-        <el-table-column prop="school_id" label="订单号">
+        <el-table-column prop="task_id" label="订单号">
         </el-table-column>
-        <el-table-column prop="level_id" label="订单发起人">
+        <el-table-column prop="task.user_nickName" label="订单发起人">
         </el-table-column>
-        <el-table-column prop="type_id" label="接单人">
+        <el-table-column prop="task.master_nickName" label="接单人">
         </el-table-column>
-        <el-table-column prop="type_id" label="施工汇报详情" width="300">
+        <el-table-column prop="report" label="施工汇报详情" width="300">
         </el-table-column>
         <el-table-column prop="name" label="操作">
           <template slot-scope="scope">
@@ -34,31 +34,32 @@
         </el-table-column>
       </el-table>
 
-      <!-- <div class="tableBottom" v-show="showPageTag">
+      <div class="tableBottom" v-show="showPageTag">
         <el-pagination class="pagination" @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page.sync="pageIndex" :page-size="pageSize" :page-sizes="[4,6,8]" layout="total, sizes, prev, pager, next, jumper" :total="total">
         </el-pagination>
-      </div> -->
+      </div>
     </div>
   </div>
 </template>
 <script>
 // import { ERR_OK } from '@/api/index'
 // import { getFullDate } from '@/common/js/utils'
-import {courseListUrl,ERR_OK} from "@/api/index"
+import {reportListUrl,reportDelUrl,ERR_OK} from "@/api/index"
 import searchCondition from '@/components/searchCondition.vue'
 export default {
   data() {
     return {
       pageIndex: 1,
-      pageSize: 6,
+      pageSize: 8,
       total: 100,
       showPageTag:true,
       dialogVisible: false,
-      tableData: []
+      tableData: [],
+      report_id:""
     }
   },
   created() {
-    // this.getList()
+    this.getList()
   },
   components: {
     searchCondition
@@ -68,23 +69,60 @@ export default {
   		
   	},
     deleteBtn(row) {
-
+      var that = this;
+      this.report_id = row.id
+      that.$confirm(`此操作将删除该用户, 是否继续?`, '提示', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning'
+        }).then(() => {
+          that.delete();
+        }).catch(() => {
+          that.$message({
+            type: 'info',
+            message: '已取消操作'
+          });          
+        });
+    },
+    delete() {
+      let that = this;
+      var params = {
+        "report_id": this.report_id
+      }
+      var url = reportDelUrl;
+      console.log(params,"params")
+      this.$axios.post(url,params).then((res)=>{
+        var result = res.data;
+        console.log(result.code,'--res.status_code--')
+        if(result.code == ERR_OK){
+          // that.tableData = result.data.report_list;
+          that.getList();
+          that.$message({
+            type: 'success',
+            message: '操作成功!'
+          });
+        }
+      });
     },
     getList() {
       let that = this;
       var params = {
-        // store_id: this.store_id,
-        // offset: (that.pageIndex-1)*that.pageSize,
-        // limit: that.pageSize,
+        pageindex:that.pageIndex,
+        callbackcount:that.pageSize,
       }
-      var url = courseListUrl;
+      var url = reportListUrl;
       console.log(params,"params")
       this.$axios.post(url,params).then((res)=>{
         var result = res.data;
-        console.log(result.status_code,'--res.status_code--')
-        if(result.status_code == ERR_OK){
-          that.tableData = result.data.course;
-          
+        console.log(result.code,'--res.status_code--')
+        if(result.code == ERR_OK){
+          that.tableData = result.data.report_list;
+          that.total = result.data.count;
+          if(that.total<that.pageSize) {
+            that.showPageTag = false;
+          }else{
+            that.showPageTag = true;
+          }
         }
       });
     },

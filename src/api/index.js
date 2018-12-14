@@ -23,6 +23,12 @@ export const sendMasterUrl = host + '/api/admin/task/master/send';
 export const cancelTaskUrl = host + '/api/admin/task/cancel';
 // 手动取消任务
 export const taskCommentUrl = host + '/api/admin/task/comment';
+// 施工汇报
+export const reportListUrl = host + '/api/admin/report/list';
+// 施工汇报删除
+export const reportDelUrl = host + '/api/admin/report/del';
+// 申请师傅的审核列表
+export const masterApplyListUrl = host + '/api/admin/master/apply';
 
 
 

@@ -126,7 +126,12 @@ export default {
 
   	},
     lookOrder(row) {
-
+      // this.form.user_id = row.id
+      // this.form.nickName = row.nickName
+      // this.$cookie.set('currentId',1)
+      this.$router.push({
+          path: '/orderListOne?user_id=' + row.id + '&nickName=' + row.nickName 
+      })
     },
     ban(){
       let that = this;

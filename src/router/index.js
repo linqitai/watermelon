@@ -38,10 +38,28 @@ export default new Router({
           }
         },
         {
+          path: '/orderListOne',
+          name: '订单表2',
+          component: (resolve) => {
+            import('../pages/order/listOne').then((module) => {
+              resolve(module)
+            })
+          }
+        },
+        {
           path: '/coupleBackList',
           name: '反馈表',
           component: (resolve) => {
             import('../pages/coupleBack/list').then((module) => {
+              resolve(module)
+            })
+          }
+        },
+        {
+          path: '/auditList',
+          name: '审核表',
+          component: (resolve) => {
+            import('../pages/audit/list').then((module) => {
               resolve(module)
             })
           }

@@ -13,7 +13,7 @@
         <el-breadcrumb separator-class="el-icon-arrow-right">
           <el-breadcrumb-item :to="{ path: '/' }"><span class="nocurrent">首页</span></el-breadcrumb-item>
           <el-breadcrumb-item><span class="nocurrent">表单管理</span></el-breadcrumb-item>
-          <el-breadcrumb-item><span>订单表</span></el-breadcrumb-item>
+          <el-breadcrumb-item><span>查看用户{{nickName}}的订单</span></el-breadcrumb-item>
         </el-breadcrumb>
       </div>
     </div>
@@ -36,12 +36,6 @@
           <p class="inline">订单号：</p>
           <div class="inline width160">
              <el-input v-model="form.order_no" size="medium" placeholder="请输入搜索内容" clearable></el-input>
-          </div>
-        </div>
-        <div class="element">
-          <p class="inline margL20">订单发起人：</p>
-          <div class="inline width160">
-             <el-input v-model="form.user_nickName" size="medium" placeholder="请输入搜索内容" clearable></el-input>
           </div>
         </div>
         <div class="element">
@@ -156,6 +150,7 @@ export default {
       task_id: '',
       dialogFormVisible: false,
       lookCommentVisible: false,
+      nickName:"",
       form: {
         order_no:"",
         user_nickName:"",
@@ -167,6 +162,7 @@ export default {
     }
   },
   created() {
+    this.nickName = this.$route.query.nickName
     console.log(this.$route.query.user_id,"this.$route.params.user_id")
     this.form.user_id = this.$route.query.user_id
     this.getList()

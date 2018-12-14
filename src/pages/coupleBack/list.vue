@@ -34,10 +34,10 @@
           </template>
         </el-table-column>
       </el-table>
-      <!-- <div class="tableBottom" v-show="showPageTag">
+      <div class="tableBottom" v-show="showPageTag">
         <el-pagination class="pagination" @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page.sync="pageIndex" :page-size="pageSize" :page-sizes="[4,6,8]" layout="total, sizes, prev, pager, next, jumper" :total="total">
         </el-pagination>
-      </div> -->
+      </div>
     </div>
   </div>
 </template>
@@ -129,12 +129,12 @@ export default {
     handleSizeChange(val) {
       console.log(`每页 ${val} 条`);
       this.pageSize = val;
-      // this.getList();
+      this.getList();
     },
     handleCurrentChange(val) {
       this.pageIndex = val;
       console.log(val);
-      // this.getList();
+      this.getList();
     }
   }
 }

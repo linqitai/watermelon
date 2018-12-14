@@ -78,9 +78,10 @@ var menu = [
             {icon:'fa-navicon',title:'表单管理',
               subs:[
                 {id:0,text:'用户表',path:'/userList'},
-                {id:1,text:'订单表',path:'/orderList'},
-                {id:2,text:'反馈表',path:'/coupleBackList'},
-                {id:3,text:'施工汇报表',path:'/reportList'}
+                {id:1,text:'审核表',path:'/auditList'},
+                {id:2,text:'订单表',path:'/orderList'},
+                {id:3,text:'反馈表',path:'/coupleBackList'},
+                {id:4,text:'施工汇报表',path:'/reportList'}
               ]
             }
            ]
