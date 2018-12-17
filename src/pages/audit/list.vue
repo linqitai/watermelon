@@ -13,7 +13,7 @@
         <el-breadcrumb separator-class="el-icon-arrow-right">
           <el-breadcrumb-item :to="{ path: '/' }"><span class="nocurrent">首页</span></el-breadcrumb-item>
           <el-breadcrumb-item><span class="nocurrent">表单管理</span></el-breadcrumb-item>
-          <el-breadcrumb-item><span>施工汇报表</span></el-breadcrumb-item>
+          <el-breadcrumb-item><span>审核列表</span></el-breadcrumb-item>
         </el-breadcrumb>
       </div>
     </div>
@@ -64,8 +64,8 @@
         </el-table-column>
         <el-table-column prop="name" label="操作" fixed="right" width="120">
           <template slot-scope="scope">
-            <el-button @click="deleteBtn(scope.row)" type="text" size="small" icon="el-icon-view">通过</el-button>
-            <el-button @click="deleteBtn(scope.row)" type="text" size="small" icon="el-icon-view">拒绝</el-button>
+            <el-button @click="operateBtn('pass',scope.row)" type="text" size="small" icon="el-icon-view">通过</el-button>
+            <el-button @click="operateBtn('refuse',scope.row)" type="text" size="small" icon="el-icon-view">拒绝</el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -80,7 +80,7 @@
 <script>
 // import { ERR_OK } from '@/api/index'
 // import { getFullDate } from '@/common/js/utils'
-import {masterApplyListUrl,ERR_OK} from "@/api/index"
+import {masterApplyListUrl,auditPassUrl,refusePassUrl,ERR_OK} from "@/api/index"
 import searchCondition from '@/components/searchCondition.vue'
 export default {
   data() {
@@ -91,6 +91,7 @@ export default {
       showPageTag:true,
       dialogVisible: false,
       tableData: [],
+      operate:'',
       form:{
         id:"",
         nickName:"",
@@ -105,8 +106,41 @@ export default {
     searchCondition
   },
   methods: {
-    deleteBtn(row) {
-
+    operateBtn(operate,row) {
+      var that = this;
+      this.$confirm(`此操作将${operate=='pass'?'通过审核':'拒绝通过审核'}, 是否继续?`, '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        that.operateEvent(operate,row);
+      }).catch(() => {
+         that.$message({
+            showClose: true,
+            message: '已取消',
+            type: 'success'
+          });
+      });
+    },
+    operateEvent(operate,row) {
+      let that = this;
+      var params = {
+        "master_id":row.id
+      }
+      var url = operate=='pass'?auditPassUrl:refusePassUrl;
+      console.log(params,"params")
+      this.$axios.post(url,params).then((res)=>{
+        var result = res.data;
+        console.log(result.code,'--res.status_code--')
+        if(result.code == ERR_OK){
+          that.getList();
+          that.$message({
+            showClose: true,
+            message: '操作成功',
+            type: 'success'
+          });
+        }
+      });
     },
     getList() {
       let that = this;

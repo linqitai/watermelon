@@ -112,7 +112,12 @@
     </div>
     <el-dialog title="双方评价" :visible.sync="lookCommentVisible" :append-to-body="true" :fullscreen="false" width="400px">
       <div class="dialogBody">
-        12312312313
+        <div class="element">
+          <label class="inline">任务发起者：{{user_comment}}</label>
+        </div>
+        <div class="element">
+          <label class="inline">接单师傅：{{master_comment}}</label>
+        </div>
       </div>
       <div slot="footer" class="dialog-footer">
         <el-button @click="lookCommentVisible = false">关闭</el-button>
@@ -137,7 +142,7 @@
 <script>
 // import { ERR_OK } from '@/api/index'
 // import { getFullDate } from '@/common/js/utils'
-import {taskListUrl,sendMasterUrl,cancelTaskUrl,taskCommentUrl,ERR_OK} from "@/api/index"
+import {taskListUrl,sendMasterUrl,cancelTaskUrl,taskCommentUrl,setRubbishUrl,ERR_OK} from "@/api/index"
 import { getFullDate } from '@/common/js/utils'
 import searchCondition from '@/components/searchCondition.vue'
 export default {
@@ -154,6 +159,9 @@ export default {
       tableData: [],
       master_id: '',
       task_id: '',
+      user_id: '',
+      user_comment:"",
+      master_comment:"",
       dialogFormVisible: false,
       lookCommentVisible: false,
       form: {
@@ -215,7 +223,8 @@ export default {
         console.log(result,"result")
         console.log(result.code,'--res.status_code--')
         if(result.code == ERR_OK){
-          
+          that.user_comment=result.data.user_comment||'未评价'
+          that.master_comment=result.data.master_comment||'未评价'
         }
       });
     },
@@ -232,7 +241,11 @@ export default {
       }).then(() => {
         that.cancelTask();
       }).catch(() => {
-                
+        that.$message({
+          showClose: true,
+          message: '已取消',
+          type: 'success'
+        });
       });
     },
     cancelTask(){
@@ -286,7 +299,43 @@ export default {
       });
     },
     setRubbishBtn(row) {
-
+      var that = this;
+      this.$confirm(`此操作将此数据设置成垃圾信息, 是否继续?`, '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        that.setRubbishEvent(row);
+      }).catch(() => {
+        that.$message({
+          showClose: true,
+          message: '已取消',
+          type: 'success'
+        });
+      });
+    },
+    setRubbishEvent(row) {
+      // setRubbishUrl
+      let that = this;
+      var params = {
+        "task_id":row.id,
+        "user_id":row.user_id
+      }
+      var url = setRubbishUrl;
+      console.log(params,"params")
+      this.$axios.post(url,params).then((res)=>{
+        var result = res.data;
+        console.log(result,"result")
+        console.log(result.code,'--res.status_code--')
+        if(result.code == ERR_OK){
+          that.getList();
+          that.$message({
+            showClose: true,
+            message: '操作成功',
+            type: 'success'
+          });
+        }
+      });
     },
     waitOrderBtn(row) {
 

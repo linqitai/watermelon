@@ -32,16 +32,42 @@
     <!-- <div class="right manage-box margR20" @click="logout">
       <i class="iconfont iconstyle icon-logout"></i>退出登录
     </div> -->
+    <div class="right manage-box margR20 cursor" @click="setting">
+      <i class="iconfont iconstyle icon-setting"></i> 设置押金金额
+     <!-- 目前的押金金额:{{deposit}} -->
+    </div>
+    <el-dialog title="设置押金金额" :visible.sync="dialogFormVisible" :append-to-body="true" :fullscreen="false" width="400px">
+      <div class="dialogBody">
+        <div class="element">
+          <label class="inline">当前押金金额：{{deposit}}</label>
+        </div>
+        <div class="element margT20">
+          <label class="inline">设置押金金额：</label>
+          <div class="inline">
+             <el-input v-model="form.deposit" size="medium" placeholder="请输入金额"></el-input>
+          </div>
+        </div>
+      </div>
+      <div slot="footer" class="dialog-footer">
+        <el-button class="" @click="dialogFormVisible = false">取 消</el-button>
+        <el-button class="margL12" type="primary" @click="sureBtn">确 定</el-button>
+      </div>
+    </el-dialog>
   </div>
 </template>
 <script>
-import { logoutUrl, ERR_OK } from '@/api/index'
+import { depositShowUrl, depositSetUrl , ajax, ERR_OK } from '@/api/index'
 export default {
   data() {
     return {
       role: '',
       username: 'admin',
-      icon: 'icon-manage'
+      icon: 'icon-manage',
+      deposit:"",
+      form: {
+        deposit:""
+      },
+      dialogFormVisible: false
     }
   },
   props: {
@@ -50,6 +76,9 @@ export default {
         default: true
       }
     },
+  created(){
+    // this.getDeposit();
+  },
   methods: {
     manage(){
       // localStorage.setItem('_lSidebar','manage');
@@ -57,9 +86,49 @@ export default {
       this.$router.push('/apply');
     },
     setting() {
-      // localStorage.setItem('_lSidebar','setting');
-      // this.$emit('childToParentEvent', 'setting')
-      this.$router.push('/setting');
+      this.getDeposit();
+      this.dialogFormVisible = true
+    },
+    sureBtn() {
+      let that = this;
+      var params = {
+        "deposit": this.form.deposit
+      };
+      var url = depositSetUrl;
+      console.log(params,"params")
+      this.$axios.post(url,params).then((res)=>{
+        var result = res.data;
+        console.log(result.code,'--res.status_code--')
+        if(result.code == ERR_OK){
+          // that.tableData = result.data.report_list;
+          // this.deposit = result.data.deposit;
+          this.dialogFormVisible = false;
+          that.$message({
+            type: 'success',
+            message: '操作成功!'
+          });
+        }
+      });
+    },
+    getDeposit(){
+      console.log("getDeposit-=-=-=-=-=-=")
+      let that = this;
+      var params = {};
+      var url = depositShowUrl;
+      console.log(params,"params")
+      // this.$axios.post(url,params).then((res)=>{
+      //   var result = res.data;
+      //   console.log(result.code,'--res.status_code--')
+      //   if(result.code == ERR_OK){
+      //     // that.tableData = result.data.report_list;
+      //     this.deposit = result.data.deposit;
+      //   }
+      // });
+      var method = "POST";
+      ajax(url,method,params,that.successed);
+    },
+    successed(res) {
+
     },
     logout() {
       /*window.localStorage.removeItem("authorization");

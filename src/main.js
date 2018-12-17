@@ -14,24 +14,32 @@ import './common/scss/icon.scss'
 import './common/scss/common.scss'
 // import './common/js/utils'
 // import utils from './common/js/utils'
-import Axios from "axios"
+import axios from "axios"
 import Cookies from 'js-cookie'
 //将axios挂载到原型上
-Vue.prototype.$axios = Axios;
+Vue.prototype.$axios = axios;
 Vue.prototype.$cookie = Cookies;
 Vue.prototype.HOST='/api'
 
 //配置全局的axios默认值（可选）
 // Axios.defaults.baseURL = 'https://wx.chinaxywl.com';
 // Axios.defaults.headers.post['Content-Type'] = 'application/x-www-form-urlencoded';
-// Axios.defaults.headers.post['token'] = 'xg1544598906osE3m5XG60C7FlYgqJu32JFI9zJ8';s
+// Axios.defaults.headers.post['token'] = localStorage.getItem('token');
 
 Vue.config.productionTip = false
 Vue.use(ElementUI)
-// Vue.use(utils)
+// 图片浏览
 import preview from 'vue-photo-preview'
 import 'vue-photo-preview/dist/skin.css'
 Vue.use(preview)
+// 富文本编辑器
+// import VueQuillEditor from 'vue-quill-editor'
+import 'quill/dist/quill.core.css'
+import 'quill/dist/quill.snow.css'
+import 'quill/dist/quill.bubble.css'
+// import '@/styles/index.scss' // global css
+// Vue.use(VueQuillEditor)
+
 /* eslint-disable no-new */
 new Vue({
   el: '#app',

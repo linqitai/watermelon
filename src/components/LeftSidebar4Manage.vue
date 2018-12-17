@@ -81,7 +81,8 @@ var menu = [
                 {id:1,text:'审核表',path:'/auditList'},
                 {id:2,text:'订单表',path:'/orderList'},
                 {id:3,text:'反馈表',path:'/coupleBackList'},
-                {id:4,text:'施工汇报表',path:'/reportList'}
+                {id:4,text:'施工汇报表',path:'/reportList'},
+                {id:5,text:'幻灯片列表',path:'/swiperList'}
               ]
             }
            ]

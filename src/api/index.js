@@ -1,3 +1,4 @@
+import $ from 'jquery'
 import http from './public'
 export const host = 'https://test.dtc233.com'
 // const host = '/jz'
@@ -5,7 +6,7 @@ export const host = 'https://test.dtc233.com'
 export const ERR_OK = 200
 
 // 登录接口
-// export const loginUrl = host + '/api/admin/auth/login';
+export const loginUrl = host + '/api/admin/login';
 
 // 课表列表
 export const userListUrl = host + '/api/admin/user/list';
@@ -29,6 +30,50 @@ export const reportListUrl = host + '/api/admin/report/list';
 export const reportDelUrl = host + '/api/admin/report/del';
 // 申请师傅的审核列表
 export const masterApplyListUrl = host + '/api/admin/master/apply';
+// 幻灯片列表
+export const swiperListUrl = host + '/api/admin/index/carouse/show';
+// 删除轮播图
+export const delSwiperListUrl = host + '/api/admin/index/carouse/del';
+// 添加轮播图
+export const addSwiperListUrl = host + '/api/admin/index/carouse/add';
+// 图片上传接口
+export const imgUploadUrl = host + '/api/admin/index/img/upload';
+// 轮播图编辑
+export const editSwiperUrl = host + '/api/admin/index/carouse/edit';
+// 审核通过(师傅)
+export const auditPassUrl = host + '/api/admin/master/apply/pass';
+// 拒绝师傅审核申请
+export const refusePassUrl = host + '/api/admin/master/apply/refuse';
+// 设为辣鸡信息并且封禁账号
+export const setRubbishUrl = host + '/api/admin/task/delban';
+// 目前的押金金额
+export const depositShowUrl = host + '/api/admin/deposit/show';
+// 设置押金金额
+export const depositSetUrl = host + '/api/admin/deposit/set';
+
+export function ajax(url,method,params,successed) {
+  var that = this;
+  $.ajax({ 
+    url : url, 
+    type : method, 
+    data : params, 
+    beforeSend: function (XMLHttpRequest) {
+      XMLHttpRequest.setRequestHeader("token", localStorage.getItem('token'));
+      // that.progressDialog = true;
+    },
+    complete: function( xhr,data ){
+      // this.authorization = xhr.getResponseHeader('authorization')
+      // console.log(xhr.getResponseHeader('authorization'),'authorization')
+      // console.log(data,'data')
+    },
+    success : function(res) { 
+      successed(res);
+    },
+    error : function(responseStr) { 
+     console.log(responseStr,"responseStr")
+    } 
+  });
+}
 
 
 

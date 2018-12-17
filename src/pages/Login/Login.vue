@@ -127,14 +127,14 @@ $(function(){
 });
 
 // import { loginUrl } from '@/api/index'
-import { testlogin,loginUrl,ERR_OK } from '@/api/index'
+import { loginUrl,ERR_OK } from '@/api/index'
 import axios from 'axios'
 // import pJS from 'pJS'
 export default {
   data: function() {
     return {
-      username: '17326052006',
-      password: 'dtc233',
+      username: 'admin',
+      password: '123456',
       ishover: false,
       autofocus: true,
       loginStatus: "",
@@ -161,9 +161,9 @@ export default {
         return;
       }
       var params = {
-        username: this.username,
-        password: this.password,
-        remember: this.statusChecked?'1':'0'
+        account: this.username,
+        pass_word: this.password,
+        // remember: this.statusChecked?'1':'0'
       }
       var url = loginUrl;
       console.log(params)
@@ -175,19 +175,17 @@ export default {
           console.log("正在进行，请稍候");
         },
         complete: function( xhr,data ){
-          this.authorization = xhr.getResponseHeader('authorization')
-          localStorage.setItem('authorization', xhr.getResponseHeader('authorization'));
-          console.log(xhr.getResponseHeader('authorization'),'authorization')
-          console.log(data,'data')
+          // this.authorization = xhr.getResponseHeader('authorization')
+          
+          // console.log(xhr.getResponseHeader('authorization'),'authorization')
+          // console.log(data,'data')
         },
         success : function(res) { 
-          console.log(res.status_code,'==res.status_code==')
-          if(res.status_code===200){
-            localStorage.setItem('login_id',res.data.id);
-            localStorage.setItem("_school_id",res.data.school_id);
-            console.log("school_id:",res.data.school_id)
-            that.$cookie.set('currentTitleId',0);
-            that.$router.push('./classplan')
+          console.log(res.code,'==res.code==')
+          if(res.code===200){
+            localStorage.setItem('token', res.data.token)
+            // that.$cookie.set('currentTitleId',0);
+            that.$router.push('./userList')
             console.log("成功");
           }else{
             console.log("失败");

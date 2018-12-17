@@ -37,8 +37,10 @@ axios.interceptors.response.use(function (res) {
 axios.interceptors.request.use(function (config) {
   // config.headers['Access-Control-Allow-Origin'] = "*";
   // "content-type": "application/json",
-  // config.headers.token = "xg1544598906osE3m5XG60C7FlYgqJu32JFI9zJ8";
-  // console.log(config.headers.authorization,'--config.headers.authorization--')
+  // config.headers.authorization = localStorage.getItem('token')
+  console.log(localStorage.getItem('token'),"token")
+  config.headers.token = localStorage.getItem('token')
+  console.log(config.headers.token,'--config.headers.token--')
   // 参数格式转换
   if(config.method=="post"){
       config.data = qs.stringify(config.data);
@@ -49,24 +51,3 @@ axios.interceptors.request.use(function (config) {
   return Promise.reject(error);
 });
 
-
-export default {
-  fetchGet(url, params) {
-    return new Promise((resolve, reject) => {
-      axios.get(url, params).then(res => {
-        resolve(res.data)
-      }).catch(error => {
-        reject(error)
-      })
-    })
-  },
-  fetchPost(url, data = {}) {
-    return new Promise((resolve, reject) => {
-      axios.post(url, (data)).then(res => {
-        resolve(res.data)
-      }).catch(error => {
-        reject(error)
-      })
-    })
-  }
-}
