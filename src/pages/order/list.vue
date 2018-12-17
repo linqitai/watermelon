@@ -142,7 +142,7 @@
 <script>
 // import { ERR_OK } from '@/api/index'
 // import { getFullDate } from '@/common/js/utils'
-import {taskListUrl,sendMasterUrl,cancelTaskUrl,taskCommentUrl,setRubbishUrl,ERR_OK} from "@/api/index"
+import {taskListUrl,sendMasterUrl,cancelTaskUrl,taskCommentUrl,setRubbishUrl,ajax,ERR_OK} from "@/api/index"
 import { getFullDate } from '@/common/js/utils'
 import searchCondition from '@/components/searchCondition.vue'
 export default {
@@ -214,12 +214,15 @@ export default {
       this.lookCommentVisible = true
       let that = this;
       var params = {
-        "task_id":row.id
+        "task_id":row.id,
+        token:localStorage.getItem('token')
       }
+      // Object.assign(params, params, p);
       var url = taskCommentUrl;
       console.log(params,"params")
-      this.$axios.post(url,params).then((res)=>{
-        var result = res.data;
+      var method = 'POST'
+      ajax(url,method,params,function(res){
+        var result = res;
         console.log(result,"result")
         console.log(result.code,'--res.status_code--')
         if(result.code == ERR_OK){
@@ -251,12 +254,15 @@ export default {
     cancelTask(){
       let that = this;
       var params = {
-        "task_id":that.task_id
+        "task_id":that.task_id,
+        token:localStorage.getItem('token')
       }
+      // Object.assign(params, params, p);
       var url = cancelTaskUrl;
       console.log(params,"params")
-      this.$axios.post(url,params).then((res)=>{
-        var result = res.data;
+      var method = 'POST'
+      ajax(url,method,params,function(res){
+        var result = res;
         console.log(result,"result")
         console.log(result.code,'--res.status_code--')
         if(result.code == ERR_OK){
@@ -278,12 +284,15 @@ export default {
       let that = this;
       var params = {
         "master_id":that.master_id,
-        "task_id":that.task_id
+        "task_id":that.task_id,
+        token:localStorage.getItem('token')
       }
+      // Object.assign(params, params, p);
       var url = sendMasterUrl;
       console.log(params,"params")
-      this.$axios.post(url,params).then((res)=>{
-        var result = res.data;
+      var method = 'POST'
+      ajax(url,method,params,function(res){
+        var result = res;
         console.log(result,"result")
         console.log(result.code,'--res.status_code--')
         if(result.code == ERR_OK){
@@ -319,12 +328,15 @@ export default {
       let that = this;
       var params = {
         "task_id":row.id,
-        "user_id":row.user_id
+        "user_id":row.user_id,
+        token:localStorage.getItem('token')
       }
+      // Object.assign(params, params, p);
       var url = setRubbishUrl;
       console.log(params,"params")
-      this.$axios.post(url,params).then((res)=>{
-        var result = res.data;
+      var method = 'POST'
+      ajax(url,method,params,function(res){
+        var result = res;
         console.log(result,"result")
         console.log(result.code,'--res.status_code--')
         if(result.code == ERR_OK){
@@ -352,6 +364,11 @@ export default {
       this.getList()
     },
     getList() {
+      console.log(this.dateRange,"this.daterange")
+      if(!this.dateRange){
+        this.form.begin_time = '';
+        this.form.end_time = '';
+      }
       let that = this;
       var params = {
         pageindex:that.pageIndex,
@@ -361,12 +378,15 @@ export default {
         begin_time:that.form.begin_time,
         end_time:that.form.end_time,
         is_done:that.form.is_done,
-        user_id:that.form.user_id
+        user_id:that.form.user_id,
+        token:localStorage.getItem('token')
       }
+      // Object.assign(params, params, p);
       var url = taskListUrl;
       console.log(params,"params")
-      this.$axios.post(url,params).then((res)=>{
-        var result = res.data;
+      var method = 'POST'
+      ajax(url,method,params,function(res){
+        var result = res;
         console.log(result,"result")
         console.log(result.code,'--res.status_code--')
         if(result.code == ERR_OK){

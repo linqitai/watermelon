@@ -56,7 +56,7 @@
   </div>
 </template>
 <script>
-import { depositShowUrl, depositSetUrl , ajax, ERR_OK } from '@/api/index'
+import { depositShowUrl,depositSetUrl,ajax,p,ERR_OK } from '@/api/index'
 export default {
   data() {
     return {
@@ -92,17 +92,20 @@ export default {
     sureBtn() {
       let that = this;
       var params = {
-        "deposit": this.form.deposit
+        "deposit": this.form.deposit,
+        token:localStorage.getItem('token')
       };
+      // Object.assign(params, params, p);
       var url = depositSetUrl;
       console.log(params,"params")
-      this.$axios.post(url,params).then((res)=>{
-        var result = res.data;
+      var method = 'POST'
+      ajax(url,method,params,function(res){
+        var result = res;
         console.log(result.code,'--res.status_code--')
         if(result.code == ERR_OK){
           // that.tableData = result.data.report_list;
           // this.deposit = result.data.deposit;
-          this.dialogFormVisible = false;
+          that.dialogFormVisible = false;
           that.$message({
             type: 'success',
             message: '操作成功!'
@@ -113,19 +116,23 @@ export default {
     getDeposit(){
       console.log("getDeposit-=-=-=-=-=-=")
       let that = this;
-      var params = {};
+      var params = {
+        token:localStorage.getItem('token')
+      };
+      // Object.assign(params, params, p);
       var url = depositShowUrl;
       console.log(params,"params")
-      // this.$axios.post(url,params).then((res)=>{
-      //   var result = res.data;
-      //   console.log(result.code,'--res.status_code--')
-      //   if(result.code == ERR_OK){
-      //     // that.tableData = result.data.report_list;
-      //     this.deposit = result.data.deposit;
-      //   }
-      // });
+      var method = 'POST'
+      ajax(url,method,params,function(res){
+        var result = res;
+        console.log(result.code,'--res.status_code--')
+        if(result.code == ERR_OK){
+          // that.tableData = result.data.report_list;
+          that.deposit = result.data.deposit;
+        }
+      });
       var method = "POST";
-      ajax(url,method,params,that.successed);
+      // ajax(url,method,params,that.successed);
     },
     successed(res) {
 

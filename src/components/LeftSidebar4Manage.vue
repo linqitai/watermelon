@@ -120,6 +120,7 @@ export default {
   },
   methods: {
     setRouter(currentTitleId,currentId) {
+      console.log(currentId,"-=-=-=-=-=-currentId==-=-=-=-=")
       this.$router.push(menu[currentTitleId].subs[currentId].path); 
     },
     textClick(item) {
@@ -151,8 +152,8 @@ export default {
           this.currentId = 0;
         }
       }
-      var currentTitleId = this.$cookie.get('currentTitleId');
-      var currentId = this.$cookie.get('currentId');
+      var currentTitleId = this.$cookie.get('currentTitleId')||0;
+      var currentId = this.$cookie.get('currentId')||0;
       console.log(currentTitleId + "," + currentId)
       this.setRouter(currentTitleId,currentId);
     },

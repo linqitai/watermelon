@@ -1,8 +1,11 @@
 import $ from 'jquery'
-import http from './public'
-export const host = 'https://test.dtc233.com'
+// import http from './public'
+import qs from 'qs'
+import router from '../router/index'
+// import axios from 'axios'
+// import http from './service'
+export const host = 'http://test.dtc233.com'
 // const host = '/jz'
-
 export const ERR_OK = 200
 
 // 登录接口
@@ -50,15 +53,19 @@ export const setRubbishUrl = host + '/api/admin/task/delban';
 export const depositShowUrl = host + '/api/admin/deposit/show';
 // 设置押金金额
 export const depositSetUrl = host + '/api/admin/deposit/set';
+// 轮播图是否展示的开关
+export const swiperSwitchUrl = host + '/api/admin/index/carouse/switch';
 
-export function ajax(url,method,params,successed) {
+export function ajax(url,method,params,doSuccess) {
   var that = this;
   $.ajax({ 
-    url : url, 
-    type : method, 
-    data : params, 
+    url: url, 
+    type: method,
+    processData: false,
+    // data : JSON.stringify(params), 
+    data: method=='POST'?qs.stringify(params):params, 
     beforeSend: function (XMLHttpRequest) {
-      XMLHttpRequest.setRequestHeader("token", localStorage.getItem('token'));
+      // XMLHttpRequest.setRequestHeader("token", localStorage.getItem('token'));
       // that.progressDialog = true;
     },
     complete: function( xhr,data ){
@@ -66,8 +73,18 @@ export function ajax(url,method,params,successed) {
       // console.log(xhr.getResponseHeader('authorization'),'authorization')
       // console.log(data,'data')
     },
-    success : function(res) { 
-      successed(res);
+    success : function(res) {
+      console.log(res,"====res====")
+      // console.log(res.data.indexOf('登录'),"res.data.indexOf('登录')")
+      if(res.code == 401 && res.data.indexOf('登录')>-1){
+        // that.$router.push('/login')
+        router.replace({
+          path: '/login'
+        })
+      }
+      if (typeof doSuccess == "function") {
+        doSuccess(res);
+      }
     },
     error : function(responseStr) { 
      console.log(responseStr,"responseStr")

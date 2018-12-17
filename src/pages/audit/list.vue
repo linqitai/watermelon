@@ -80,7 +80,7 @@
 <script>
 // import { ERR_OK } from '@/api/index'
 // import { getFullDate } from '@/common/js/utils'
-import {masterApplyListUrl,auditPassUrl,refusePassUrl,ERR_OK} from "@/api/index"
+import {masterApplyListUrl,auditPassUrl,refusePassUrl,ajax,p,ERR_OK} from "@/api/index"
 import searchCondition from '@/components/searchCondition.vue'
 export default {
   data() {
@@ -125,12 +125,15 @@ export default {
     operateEvent(operate,row) {
       let that = this;
       var params = {
-        "master_id":row.id
+        "master_id":row.id,
+        token:localStorage.getItem('token')
       }
+      // Object.assign(params, params, p);
       var url = operate=='pass'?auditPassUrl:refusePassUrl;
       console.log(params,"params")
-      this.$axios.post(url,params).then((res)=>{
-        var result = res.data;
+      var method = 'POST'
+      ajax(url,method,params,function(res){
+        var result = res;
         console.log(result.code,'--res.status_code--')
         if(result.code == ERR_OK){
           that.getList();
@@ -149,12 +152,15 @@ export default {
         callbackcount:that.pageSize,
         id:this.form.id,
         nickName:this.form.nickName,
-        phone:this.form.phone
+        phone:this.form.phone,
+        token:localStorage.getItem('token')
       }
+      // Object.assign(params, params, p);
       var url = masterApplyListUrl;
       console.log(params,"params")
-      this.$axios.post(url,params).then((res)=>{
-        var result = res.data;
+      var method = 'POST'
+      ajax(url,method,params,function(res){
+        var result = res;
         console.log(result.code,'--res.status_code--')
         if(result.code == ERR_OK){
           that.tableData = result.data.apply_list;

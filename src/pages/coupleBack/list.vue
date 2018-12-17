@@ -44,7 +44,7 @@
 <script>
 // import { ERR_OK } from '@/api/index'
 // import { getFullDate } from '@/common/js/utils'
-import {feedbackUrl,feedbackDelUrl,ERR_OK} from "@/api/index"
+import {feedbackUrl,feedbackDelUrl,ajax,p,ERR_OK} from "@/api/index"
 import searchCondition from '@/components/searchCondition.vue'
 export default {
   data() {
@@ -67,12 +67,15 @@ export default {
     delete() {
       let that = this;
       var params = {
-        feed_back_id:that.feed_back_id
+        feed_back_id:that.feed_back_id,
+        token:localStorage.getItem('token')
       }
+      // Object.assign(params, params, p);
       var url = feedbackDelUrl;
       console.log(params,"params")
-      this.$axios.post(url,params).then((res)=>{
-        var result = res.data;
+      var method = 'POST'
+      ajax(url,method,params,function(res){
+        var result = res;
         console.log(result.code,'--res.status_code--')
         if(result.code == ERR_OK){
           that.getList();
@@ -106,12 +109,15 @@ export default {
       let that = this;
       var params = {
         pageindex:that.pageIndex,
-        callbackcount:that.pageSize
+        callbackcount:that.pageSize,
+        token:localStorage.getItem('token')
       }
+      // Object.assign(params, params, p);
       var url = feedbackUrl;
       console.log(params,"params")
-      this.$axios.post(url,params).then((res)=>{
-        var result = res.data;
+      var method = 'POST'
+      ajax(url,method,params,function(res){
+        var result = res;
         console.log(result.code,'--res.status_code--')
         if(result.code == ERR_OK){
           that.tableData = result.data.feedback;

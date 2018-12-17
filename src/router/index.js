@@ -7,7 +7,7 @@ export default new Router({
   routes: [
     {
       path: '/',
-      redirect: '/login'
+      redirect: '/userList'
     },
     {
       path: '/login',
@@ -23,6 +23,15 @@ export default new Router({
       name: 'demo',
       component: (resolve) => {
         import('../pages/demo/demo/demo').then((module) => {
+          resolve(module)
+        })
+      }
+    },
+    {
+      path: '/squill',
+      name: 'demo',
+      component: (resolve) => {
+        import('../pages/demo/demo/squill').then((module) => {
           resolve(module)
         })
       }

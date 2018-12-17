@@ -87,8 +87,9 @@
 <script>
 // import { ERR_OK } from '@/api/index'
 // import { getFullDate } from '@/common/js/utils'
-import {userListUrl,banUrl,ERR_OK} from "@/api/index"
+import {userListUrl,banUrl,ajax,ERR_OK} from "@/api/index"
 import searchCondition from '@/components/searchCondition.vue'
+
 export default {
   data() {
     return {
@@ -137,14 +138,17 @@ export default {
       let that = this;
       var params = {
         "ban":this.form.is_ban==1?0:1,
-        "user_id":this.form.user_id
+        "user_id":this.form.user_id,
+        token:localStorage.getItem('token')
       }
       var url = banUrl;
       console.log(params,"params")
-      that.$axios.post(url,params).then((res)=>{
-        var result = res.data;
+      var method = 'POST'
+      ajax(url,method,params,function(res){
+        var result = res;
         console.log(result.code,"===result.code===")
         if (result.code == ERR_OK) {
+          that.form.user_id = '';
           that.getList();
           that.$message({
             type: 'success',
@@ -178,13 +182,15 @@ export default {
         callbackcount:that.pageSize,
         id:that.form.user_id,
         nickName:that.form.nickName,
-        phone:that.form.phone
+        phone:that.form.phone,
+        token:localStorage.getItem('token')
       }
+      // Object.assign(params, params, p);
       var url = userListUrl;
       console.log(params,"params")
-      that.$axios.post(url,params).then((res)=>{
-        var result = res.data;
-        console.log(result.code,"===result.code===")
+      var method = 'POST'
+      ajax(url,method,params,function(res){
+        var result = res;
         if (result.code == ERR_OK) {
           that.tableData = result.data.user_list;
           for(var i=0;i<that.tableData.length;i++){
@@ -201,38 +207,7 @@ export default {
             that.showPageTag = true;
           }
         }
-        // alert(res)
       })
-      // $.ajax({ 
-      //   url : url, 
-      //   type : 'POST', 
-      //   data : JSON.stringify(params),
-      //   cache:false,
-      //   // 告诉jQuery不要去处理发送的数据
-      //   processData : false, 
-      //   // 告诉jQuery不要去设置Content-Type请求头
-      //   contentType : false,
-      //   beforeSend: function (XMLHttpRequest) {
-      //     XMLHttpRequest.setRequestHeader("Content-Type","application/x-www-form-urlencoded");
-      //     // XMLHttpRequest.setRequestHeader("authorization", localStorage.getItem('authorization'));
-      //     // that.progressDialog = true;
-      //   },
-      //   complete: function( xhr,data ){
-          
-      //   },
-      //   success : function(res) { 
-      //     if(res.status_code===ERR_OK){
-      //       console.log("====成功===");
-      //     }else{
-      //       console.log("失败");
-      //     }
-      //   },
-      //   error : function(responseStr) { 
-      //     // that.$router.push({
-      //     //     path: '/login'
-      //     // })
-      //   } 
-      // });
     },
     handleSizeChange(val) {
       console.log(`每页 ${val} 条`);

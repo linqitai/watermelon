@@ -36,7 +36,13 @@
         </el-table-column>
         <el-table-column prop="is_show" label="是否使用">
           <template slot-scope="scope">
-            {{scope.row.is_show==1?'是':'否'}}
+            {{scope.row.is_show==true?'是':'否'}}
+            <el-switch
+              v-model="scope.row.is_show"
+              active-color="#409EFF"
+              inactive-color="#c7c7c7"
+              @change="switchEvent(scope.row)">
+            </el-switch>
           </template>
         </el-table-column>
         <el-table-column prop="report" label="排序">
@@ -46,7 +52,7 @@
         <el-table-column prop="name" label="操作">
           <template slot-scope="scope">
             <el-button @click="deleteBtn(scope.row)" type="text" size="small" icon="el-icon-delete">删除</el-button>
-            <el-button @click="editBtn(scope.row.id,'edit')" type="text" size="small" icon="el-icon-edit-outline">编辑</el-button>
+            <el-button @click="editBtn(scope.row,'edit')" type="text" size="small" icon="el-icon-edit-outline">编辑</el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -67,19 +73,31 @@
         <div class="element margT20">
           <label class="inline">上传封面：</label>
           <div class="inline">
+             <!-- <input type="file" @change="inputImgChange($event)" v-show="!form.img_address"/> -->
+             <img v-show="form.img_address" :src="form.img_address" width="100">
              <input type="file" @change="inputImgChange($event)"/>
           </div>
         </div>
         <div class="element margT20">
           <div>内容：</div>
           <!-- <button  @click="addMyBlot" icon="el-icon-picture-outline"></button> -->
-          <div class="inline" style="height:300px; margin-top:10px;">
-            <quill-editor style="height:300px !important;"
+          <div class="inline" style="height:300px;">
+            <!-- <quill-editor style="height:300px !important;"
               v-model="form.contents"
               ref="editor"
               :options="editorOption">
              
-            </quill-editor>
+            </quill-editor> -->
+            <!-- 图片上传组件辅助:headers="header"-->
+            <input style="opacity: 0" class="quillInput" type="file" @change="quillInputImgChange($event)"/>
+            <el-row v-loading="quillUpdateImg">
+              <quill-editor style="height:300px !important;"
+                v-model="form.contents"
+                ref="myQuillEditor"
+                :options="editorOption"
+              >
+              </quill-editor>
+            </el-row>
           </div>
         </div>
       </div>
@@ -94,14 +112,31 @@
 // import { ERR_OK } from '@/api/index'
 // import { getFullDate } from '@/common/js/utils'
 // import { quillEditor } from 'vue-quill-editor' //调用编辑器
-import {quillRedefine} from 'vue-quill-editor-upload'
 import {quillEditor} from 'vue-quill-editor'
-import {swiperListUrl,delSwiperListUrl,addSwiperListUrl,editSwiperUrl,imgUploadUrl,ERR_OK} from "@/api/index"
+import {swiperListUrl,delSwiperListUrl,addSwiperListUrl,editSwiperUrl,imgUploadUrl,swiperSwitchUrl,p,ajax,ERR_OK} from "@/api/index"
 import searchCondition from '@/components/searchCondition.vue'
 // import ue from '@/components/ue.vue'
+const toolbarOptions = [
+  ['bold', 'italic', 'underline', 'strike'],        // toggled buttons
+  ['blockquote', 'code-block'],
 
+  [{'header': 1}, {'header': 2}],               // custom button values
+  [{'list': 'ordered'}, {'list': 'bullet'}],
+  [{'script': 'sub'}, {'script': 'super'}],      // superscript/subscript
+  [{'indent': '-1'}, {'indent': '+1'}],          // outdent/indent
+  [{'direction': 'rtl'}],                         // text direction
+
+  [{'size': ['small', false, 'large', 'huge']}],  // custom dropdown
+  [{'header': [1, 2, 3, 4, 5, 6, false]}],
+
+  [{'color': []}, {'background': []}],          // dropdown with defaults from theme
+  [{'font': []}],
+  [{'align': []}],
+  ['link', 'image', 'video'],
+  ['clean']                                         // remove formatting button
+]
 export default {
-  components: {quillEditor, quillRedefine},
+  components: {quillEditor},
   data() {
     return {
       pageIndex: 1,
@@ -116,57 +151,116 @@ export default {
       operate:'',
       form: {
         carouse_id:"",
-        title:"好商品",
-        img_address:"http://xywl-1256946438.cos.ap-chengdu.myqcloud.com/storage%2Fapp%2Fimages%2F20181215%2Fcea48db6588fe218ce3cb86bd6a8f899.jpg",
-        contents:"低价大促销",
-        imgs:"http://xywl-1256946438.cos.ap-chengdu.myqcloud.com/storage%2Fapp%2Fimages%2F20181215%2Fcea48db6588fe218ce3cb86bd6a8f899.jpg"
+        title:"",
+        img_address:"",
+        contents:"",
+        token:localStorage.getItem('token')
+      },
+      quillUpdateImg: false, // 根据图片上传状态来确定是否显示loading动画
+      detailContent: '', // 富文本内容
+      // 工具栏配置
+      editorOption: {
+        placeholder: '',
+        theme: 'snow',  // or 'bubble'
+        modules: {
+            toolbar: {
+                container: toolbarOptions,  // 工具栏
+                handlers: {
+                    'image': function (value) {
+                        if (value) {
+                            // document.querySelector('#quill-upload input').click()
+                            // 触发input框选择图片文件
+                            document.querySelector('.quillInput').click()
+                            // alert(1)
+                        } else {
+                            this.quill.format('image', false);
+                        }
+                    }
+                }
+            }
+        }
       }
     }
   },
   created() {
     console.log(imgUploadUrl,"imgUploadUrl")
-    // this.editorOption = quillRedefine(
-    //     {
-    //       // 图片上传的设置
-    //       uplpadConfig: {
-    //         action: imgUploadUrl,  // 必填参数 图片上传地址
-    //         // 必选参数  res是一个函数，函数接收的response为上传成功时服务器返回的数据
-    //         // 你必须把返回的数据中所包含的图片地址 return 回去
-    //         res: (response) => {
-    //           console.log(response.data[0].url,"response.data[0].url")
-    //           return response.data[0].url  // 这里切记要return回你的图片地址
-    //         },
-    //         methods: 'POST',  // 可选参数 图片上传方式  默认为post
-    //         // token: sessionStorage.token,  // 可选参数 如果需要token验证，假设你的token有存放在sessionStorage
-    //         name: 'img',  // 可选参数 文件的参数名 默认为img
-    //         // size: 500,  // 可选参数   图片限制大小，单位为Kb, 1M = 1024Kb
-    //         accept: 'image/png, image/gif, image/jpeg, image/bmp, image/x-icon',  // 可选参数 可上传的图片格式
-    //         // input点击事件  formData是提交的表单实体
-    //         change: (formData) => {
-    //           console.log(formData,"formData")
-    //         },
-    //         // 设置请求头 xhr: 异步请求， formData: 表单对象
-    //         header: (xhr, formData) => {
-    //             // xhr.setRequestHeader('myHeader','myValue');
-    //             // formData.append('file', '1234')
-    //         },
-    //       }
-    //     }
-    //   )
+    
     this.getList()
   },
   methods: {
-    addMyBlot() {
-      const quill = this.$refs['editor'].quill;
-      // quill.insertEmbed(index, 'myblot', 'balabala。。。');
+    quillInputImgChange(e){
+      let that = this;
+      var file = e.target.files[0]
+      let params = new FormData()
+      params.append('file', file)
+      params.append('token', localStorage.getItem('token'))
+      var url = imgUploadUrl;
+      console.log(params,"========params==========")
+      var method = 'POST'
+      $.ajax({ 
+        url : url, 
+        type : method, 
+        data : params, 
+        cache:false,
+        // 告诉jQuery不要去处理发送的数据
+        processData : false, 
+        // 告诉jQuery不要去设置Content-Type请求头
+        contentType : false,
+        beforeSend: function (XMLHttpRequest) {
+          that.quillUpdateImg = true
+        },
+        complete: function( xhr,data ){
+          
+        },
+        success : function(res) {
+          let quill = that.$refs.myQuillEditor.quill
+          // 如果上传成功
+          if (res.code == ERR_OK) {
+              // 获取光标所在位置
+              let length = quill.getSelection().index;
+              // 插入图片  res.info为服务器返回的图片地址
+              quill.insertEmbed(length, 'image', res.data[0].url)
+              // 调整光标到最后
+              quill.setSelection(length + 1)
+          } else {
+              that.$message.error('图片插入失败')
+          }
+          // loading动画消失
+          that.quillUpdateImg = false
+        },
+        error : function(responseStr) { 
+          console.log("------error----------")
+          that.quillUpdateImg = false
+          that.$message.error('图片插入失败')
+        } 
+      });
     },
     inputImgChange(e) {
       let that = this;
       var file = e.target.files[0]
       let params = new FormData()
       params.append('file', file)
+      params.append('token',localStorage.getItem('token'))
       var url = imgUploadUrl;
       console.log(params,"========params==========")
+      var method = 'POST'
+      // ajax(url,method,params,function(res){
+      //   if(res.code===ERR_OK){
+      //     console.log("====成功===");
+      //     console.log(res.data[0].url,"res.data[0].url")
+      //     that.form.imgs = res.data[0].url
+      //     that.form.img_address = res.data[0].url
+      //   }else{
+      //     console.log("失败");
+      //     that.$message.error('上传图片失败')
+      //   }
+      // })
+      const loading = that.$loading({
+        lock: true,
+        text: 'Loading',
+        spinner: 'el-icon-loading',
+        background: 'rgba(0, 0, 0, 0.7)'
+      });
       $.ajax({ 
         url : url, 
         type : 'POST', 
@@ -177,17 +271,15 @@ export default {
         // 告诉jQuery不要去设置Content-Type请求头
         contentType : false,
         beforeSend: function (XMLHttpRequest) {
-          // XMLHttpRequest.setRequestHeader("authorization", localStorage.getItem('authorization'));
-          // that.progressDialog = true;
+          
         },
         complete: function( xhr,data ){
-          
+          loading.close();
         },
         success : function(res) { 
           if(res.code===ERR_OK){
             console.log("====成功===");
             console.log(res.data[0].url,"res.data[0].url")
-            that.form.imgs = res.data[0].url
             that.form.img_address = res.data[0].url
             // that.form.img_url = res.data[0].url;
             // that.isShowImgUrl = true;
@@ -198,15 +290,49 @@ export default {
         },
         error : function(responseStr) { 
           console.log("------error----------")
+          loading.close();
         } 
       });
     },
+    switchEvent(row) {
+      let that = this;
+      console.log(row.is_show,"row.is_show")
+      var params = {
+        "carouse_id": row.id,
+        "is_show": row.is_show==true?1:2, 
+        token: localStorage.getItem('token')
+      }
+      // Object.assign(params, params, p);
+      var url = swiperSwitchUrl;
+      console.log(params,"params")
+      var method = 'POST'
+      ajax(url,method,params,function(res){
+        var result = res;
+        console.log(result.code,'--res.status_code--')
+        if(result.code == ERR_OK){
+          // that.tableData = result.data.report_list;
+          that.getList();
+          that.$message({
+            type: 'success',
+            message: '操作成功!'
+          });
+        }
+      })
+    },
   	addBtn(operate) {
+      this.form.carouse_id = "";
+      this.form.title = "";
+      this.form.img_address = "";
+      this.form.contents = "";
       this.operate = operate;
   		this.dialogFormVisible = true;
   	},
-    editBtn(id,operate) {
-      this.form.carouse_id = id;
+    editBtn(row,operate) {
+      console.log(row,"row")
+      this.form.carouse_id = row.id;
+      this.form.title = row.title;
+      this.form.img_address = row.img;
+      this.form.contents = row.content;
       this.operate = operate;
       this.dialogFormVisible = true 
     },
@@ -215,8 +341,10 @@ export default {
       var params = this.form;
       var url = this.operate=='add'?addSwiperListUrl:editSwiperUrl;
       console.log(params,"params")
-      this.$axios.post(url,params).then((res)=>{
-        var result = res.data;
+      // Object.assign(params, params, p);
+      var method = 'POST'
+      ajax(url,method,params,function(res){
+        var result = res;
         console.log(result.code,'--res.status_code--')
         if(result.code == ERR_OK){
           // that.tableData = result.data.report_list;
@@ -248,12 +376,15 @@ export default {
     delete() {
       let that = this;
       var params = {
-        "carouse_id": this.id
+        "carouse_id": this.id,
+        token:localStorage.getItem('token')
       }
+      // Object.assign(params, params, p);
       var url = delSwiperListUrl;
       console.log(params,"params")
-      this.$axios.post(url,params).then((res)=>{
-        var result = res.data;
+      var method = 'POST'
+      ajax(url,method,params,function(res){
+        var result = res;
         console.log(result.code,'--res.status_code--')
         if(result.code == ERR_OK){
           // that.tableData = result.data.report_list;
@@ -263,21 +394,32 @@ export default {
             message: '操作成功!'
           });
         }
-      });
+      })
     },
     getList() {
       let that = this;
       var params = {
         pageindex:that.pageIndex,
         callbackcount:that.pageSize,
+        token:localStorage.getItem('token')
       }
+      // Object.assign(params, params, p);
       var url = swiperListUrl;
       console.log(params,"params")
-      this.$axios.post(url,params).then((res)=>{
-        var result = res.data;
+      var method = 'POST'
+      ajax(url,method,params,function(res){
+        var result = res;
         console.log(result.code,'--res.status_code--')
         if(result.code == ERR_OK){
           that.tableData = result.data.carouse_list;
+          for(var i=0;i<that.tableData.length;i++){
+            if(that.tableData[i].is_show==1){
+              that.tableData[i].is_show = true
+            }
+            if(that.tableData[i].is_show==2){
+              that.tableData[i].is_show = false
+            }
+          }
           that.total = result.data.count;
           if(that.total<that.pageSize) {
             that.showPageTag = false;
@@ -285,7 +427,20 @@ export default {
             that.showPageTag = true;
           }
         }
-      });
+      })
+      // this.$axios.post(url,params).then((res)=>{
+      //   var result = res.data;
+      //   console.log(result.code,'--res.status_code--')
+      //   if(result.code == ERR_OK){
+      //     that.tableData = result.data.carouse_list;
+      //     that.total = result.data.count;
+      //     if(that.total<that.pageSize) {
+      //       that.showPageTag = false;
+      //     }else{
+      //       that.showPageTag = true;
+      //     }
+      //   }
+      // });
     },
     handleSizeChange(val) {
       console.log(`每页 ${val} 条`);

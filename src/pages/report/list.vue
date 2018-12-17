@@ -44,7 +44,7 @@
 <script>
 // import { ERR_OK } from '@/api/index'
 // import { getFullDate } from '@/common/js/utils'
-import {reportListUrl,reportDelUrl,ERR_OK} from "@/api/index"
+import {reportListUrl,reportDelUrl,ajax,ERR_OK} from "@/api/index"
 import searchCondition from '@/components/searchCondition.vue'
 export default {
   data() {
@@ -87,12 +87,15 @@ export default {
     delete() {
       let that = this;
       var params = {
-        "report_id": this.report_id
+        "report_id": this.report_id,
+        token:localStorage.getItem('token')
       }
+      // Object.assign(params, params, p);
       var url = reportDelUrl;
       console.log(params,"params")
-      this.$axios.post(url,params).then((res)=>{
-        var result = res.data;
+      var method = 'POST'
+      ajax(url,method,params,function(res){
+        var result = res;
         console.log(result.code,'--res.status_code--')
         if(result.code == ERR_OK){
           // that.tableData = result.data.report_list;
@@ -109,11 +112,14 @@ export default {
       var params = {
         pageindex:that.pageIndex,
         callbackcount:that.pageSize,
+        token:localStorage.getItem('token')
       }
+      // Object.assign(params, params, p);
       var url = reportListUrl;
       console.log(params,"params")
-      this.$axios.post(url,params).then((res)=>{
-        var result = res.data;
+      var method = 'POST'
+      ajax(url,method,params,function(res){
+        var result = res;
         console.log(result.code,'--res.status_code--')
         if(result.code == ERR_OK){
           that.tableData = result.data.report_list;
