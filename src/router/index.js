@@ -102,9 +102,18 @@ export default new Router({
         },
         {
           path: '/swiperList',
-          name: '幻灯片列表',
+          name: '幻灯片管理',
           component: (resolve) => {
             import('../pages/swiper/list').then((module) => {
+              resolve(module)
+            })
+          }
+        },
+        {
+          path: '/advertisementList',
+          name: '广告管理',
+          component: (resolve) => {
+            import('../pages/advertisement/list').then((module) => {
               resolve(module)
             })
           }

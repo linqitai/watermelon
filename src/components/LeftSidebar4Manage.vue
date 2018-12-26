@@ -82,7 +82,8 @@ var menu = [
                 {id:2,text:'订单表',path:'/orderList'},
                 {id:3,text:'反馈表',path:'/coupleBackList'},
                 {id:4,text:'施工汇报表',path:'/reportList'},
-                {id:5,text:'幻灯片列表',path:'/swiperList'}
+                {id:5,text:'幻灯片管理',path:'/swiperList'},
+                {id:6,text:'广告管理',path:'/advertisementList'}
               ]
             }
            ]
@@ -106,30 +107,30 @@ export default {
   created(){
     this.itemTitleLen = menu.length;//标题的长度
     this.flex=this.initFlex();
-    var currentTitleId = this.$cookie.get('currentTitleId')||0;
+    var currentTitleIdXG = this.$cookie.get('currentTitleIdXG')||0;
     var currentId = this.$cookie.get('currentId')||0;
-    console.log(currentTitleId + "," + currentId)
-    console.log("intoflexToggle")
-    if(currentTitleId == 'undefined'){
-      currentTitleId = 0;
+    console.log(currentTitleIdXG + "," + currentId)
+    console.log("create")
+    if(currentTitleIdXG == 'undefined'){
+      currentTitleIdXG = 0;
     }
-    this.flexToggle(currentTitleId,"created")
+    this.flexToggle(currentTitleIdXG,"created")
     console.log("outflexToggle")
   },
   mounted() {
   },
   methods: {
-    setRouter(currentTitleId,currentId) {
+    setRouter(currentTitleIdXG,currentId) {
       console.log(currentId,"-=-=-=-=-=-currentId==-=-=-=-=")
-      this.$router.push(menu[currentTitleId].subs[currentId].path); 
+      this.$router.push(menu[currentTitleIdXG].subs[currentId].path); 
     },
     textClick(item) {
-      var currentTitleId = this.$cookie.get('currentTitleId')||0;
+      var currentTitleIdXG = this.$cookie.get('currentTitleIdXG')||0;
       this.currentId = item.id;
       this.$cookie.set('currentId',this.currentId);
       var currentId = this.$cookie.get('currentId');
-      console.log(currentTitleId + "," + currentId)
-      this.setRouter(currentTitleId,currentId);
+      console.log(currentTitleIdXG + "," + currentId)
+      this.setRouter(currentTitleIdXG,currentId);
     },
     flexToggle(index,from) {
       var arr = [];
@@ -147,15 +148,15 @@ export default {
         }else{
           arr[index]=true;
           this.flex = arr;
-          this.$cookie.set('currentTitleId',index);
+          this.$cookie.set('currentTitleIdXG',index);
           this.$cookie.set('currentId',0);
           this.currentId = 0;
         }
       }
-      var currentTitleId = this.$cookie.get('currentTitleId')||0;
+      var currentTitleIdXG = this.$cookie.get('currentTitleIdXG')||0;
       var currentId = this.$cookie.get('currentId')||0;
-      console.log(currentTitleId + "," + currentId)
-      this.setRouter(currentTitleId,currentId);
+      console.log(currentTitleIdXG + "," + currentId)
+      this.setRouter(currentTitleIdXG,currentId);
     },
     initFlex() {
       var arr=[]

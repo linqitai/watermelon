@@ -55,6 +55,17 @@ export const depositShowUrl = host + '/api/admin/deposit/show';
 export const depositSetUrl = host + '/api/admin/deposit/set';
 // 轮播图是否展示的开关
 export const swiperSwitchUrl = host + '/api/admin/index/carouse/switch';
+// 小程序跳转管理(列表)
+export const miniListUrl = host + '/api/admin/index/mini/list';
+// 小程序跳转管理(编辑)
+export const miniEditUrl = host + '/api/admin/index/mini/edit';
+// 小程序跳转管理(新增)
+export const miniAddUrl = host + '/api/admin/index/mini/add';
+// 小程序跳转管理(删除)
+export const miniDelUrl = host + '/api/admin/index/mini/del';
+// 小程序跳转管理(切换上下架)
+export const miniSwitchUrl = host + '/api/admin/index/mini/switch';
+
 
 export function ajax(url,method,params,doSuccess) {
   var that = this;

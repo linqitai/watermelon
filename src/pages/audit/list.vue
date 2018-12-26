@@ -41,13 +41,19 @@
       <el-table :data="tableData" border style="width: 100%;">
         <el-table-column prop="id" label="编号">
         </el-table-column>
-        <el-table-column prop="user.nickName" label="昵称" width="150">
+        <el-table-column prop="user.nickName" label="昵称" width="160">
+          <template slot-scope="scope">
+            {{scope.row.user.nickName}}
+            <!-- <el-tooltip class="width140 ellipsis" effect="dark" :content="scope.row.user.nickName" placement="top-start">
+               <el-button type="text">{{scope.row.user.nickName}}</el-button>
+            </el-tooltip> -->
+          </template>
         </el-table-column>
         <el-table-column prop="phone" label="电话" width="120">
         </el-table-column>
         <el-table-column prop="gz" label="所选工种" width="160">
         </el-table-column>
-        <el-table-column prop="address" label="居住地址">
+        <el-table-column prop="address" label="居住地址" width="200">
         </el-table-column>
         <el-table-column prop="type_id" label="身份证（正反）" width="190">
           <template slot-scope="scope">

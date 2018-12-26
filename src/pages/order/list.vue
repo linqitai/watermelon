@@ -69,7 +69,13 @@
         </el-table-column>
         <el-table-column prop="master_id" label="师傅ID">
         </el-table-column>
-        <el-table-column prop="user_nickName" label="订单发起人" width="100">
+        <el-table-column prop="user_nickName" label="订单发起人" width="160">
+           <template slot-scope="scope">
+              <label class="width160 ellipsis">{{scope.row.user_nickName}}</label>
+              <!-- <el-tooltip class="width140 ellipsis" effect="dark" :content="scope.row.user_nickName" placement="right">
+                 <el-button type="text" size="small">{{scope.row.user_nickName}}</el-button>
+              </el-tooltip> -->
+          </template>
         </el-table-column>
         <el-table-column prop="master_nickName" label="接单人" width="120">
         </el-table-column>
@@ -81,6 +87,12 @@
         <el-table-column prop="total" label="需求概况" width="100">
         </el-table-column>
         <el-table-column prop="gz" label="设计工种" width="180">
+          <template slot-scope="scope">
+            <!-- {{scope.row.user.nickName}} -->
+            <el-tooltip class="width140 ellipsis" effect="dark" :content="scope.row.gz" placement="right">
+               <el-button type="text" size="small">{{scope.row.gz}}</el-button>
+            </el-tooltip>
+          </template>
         </el-table-column>
         <el-table-column prop="is_done" label="状态" fixed="right">
           <template slot-scope="scope">{{ scope.row.is_done | status}}</template>

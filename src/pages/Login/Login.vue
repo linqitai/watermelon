@@ -133,8 +133,8 @@ import axios from 'axios'
 export default {
   data: function() {
     return {
-      username: 'admin',
-      password: '123456',
+      username: 'admin', //admin
+      password: '123456',//123456
       ishover: false,
       autofocus: true,
       loginStatus: "",
