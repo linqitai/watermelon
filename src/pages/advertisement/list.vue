@@ -16,7 +16,7 @@
         <el-breadcrumb separator-class="el-icon-arrow-right">
           <el-breadcrumb-item :to="{ path: '/' }"><span class="nocurrent">首页</span></el-breadcrumb-item>
           <el-breadcrumb-item><span class="nocurrent">表单管理</span></el-breadcrumb-item>
-          <el-breadcrumb-item><span>广告管理2</span></el-breadcrumb-item>
+          <el-breadcrumb-item><span>广告管理</span></el-breadcrumb-item>
         </el-breadcrumb>
       </div>
     </div>

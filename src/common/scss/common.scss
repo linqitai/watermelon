@@ -169,7 +169,9 @@ $headerTop:50px;
     }
   }
 }
-
+.el-radio+.el-radio{
+  margin-left: 15px;
+}
 // .dialogModel{
 //   position: fixed;
 //   left: 50%;

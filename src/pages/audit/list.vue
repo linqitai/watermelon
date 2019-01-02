@@ -1,7 +1,9 @@
 <style lang="scss" scoped>
 .apply{
   .operateTableBox{
-
+    .selectStatus{
+      margin-top: 11px;
+    }
   }
 }
 </style>
@@ -19,6 +21,12 @@
     </div>
     <div class="operateTableBox">
       <search-condition @clickSearchData="getList">
+        <div class="element">
+          <el-radio-group class="selectStatus" v-model="form.is_pass" @change="changePass">
+            <el-radio :label="2">待审核</el-radio>
+            <el-radio :label="1">已通过</el-radio>
+          </el-radio-group> 
+        </div>
         <div class="element">
           <p class="inline">编号：</p>
           <div class="inline width160">
@@ -56,7 +64,7 @@
         <el-table-column prop="address" label="居住地址" width="200">
         </el-table-column>
         <el-table-column prop="type_id" label="身份证（正反）" width="190">
-          <template slot-scope="scope">
+          <template slot-scope="scope" v-if="">
             <img :src="scope.row.img_1" width="80" :preview="scope.row.id" preview-text="描述文字">
             <img :src="scope.row.img_2" width="80" :preview="scope.row.id" preview-text="描述文字">
           </template>
@@ -68,7 +76,7 @@
         </el-table-column>
         <el-table-column prop="created_at" label="申请时间" width="160">
         </el-table-column>
-        <el-table-column prop="name" label="操作" fixed="right" width="120">
+        <el-table-column prop="name" label="操作" fixed="right" width="120" v-if="form.is_pass==2">
           <template slot-scope="scope">
             <el-button @click="operateBtn('pass',scope.row)" type="text" size="small" icon="el-icon-view">通过</el-button>
             <el-button @click="operateBtn('refuse',scope.row)" type="text" size="small" icon="el-icon-view">拒绝</el-button>
@@ -92,13 +100,14 @@ export default {
   data() {
     return {
       pageIndex: 1,
-      pageSize: 8,
+      pageSize: 4,
       total: 100,
       showPageTag:true,
       dialogVisible: false,
       tableData: [],
       operate:'',
       form:{
+        is_pass: 2,
         id:"",
         nickName:"",
         phone:""
@@ -112,6 +121,11 @@ export default {
     searchCondition
   },
   methods: {
+    changePass(value) {
+      console.log(value,"is_pass")
+      this.form.is_pass = value;
+      this.getList();
+    },
     operateBtn(operate,row) {
       var that = this;
       this.$confirm(`此操作将${operate=='pass'?'通过审核':'拒绝通过审核'}, 是否继续?`, '提示', {
@@ -131,7 +145,8 @@ export default {
     operateEvent(operate,row) {
       let that = this;
       var params = {
-        "master_id":row.id,
+        user_id: row.user_id,
+        master_id:row.id,
         token:localStorage.getItem('token')
       }
       // Object.assign(params, params, p);
@@ -156,6 +171,7 @@ export default {
       var params = {
         pageindex:that.pageIndex,
         callbackcount:that.pageSize,
+        is_pass:this.form.is_pass,
         id:this.form.id,
         nickName:this.form.nickName,
         phone:this.form.phone,
@@ -169,7 +185,7 @@ export default {
         var result = res;
         console.log(result.code,'--res.status_code--')
         if(result.code == ERR_OK){
-          that.tableData = result.data.apply_list;
+          that.tableData = result.data.list;
           for(var i=0;i<that.tableData.length;i++){
             var arr = []
             for(var j=0;j<that.tableData[i].master_category.length;j++){
