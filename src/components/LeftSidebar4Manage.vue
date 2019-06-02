@@ -1,174 +1,126 @@
 <style lang="scss" scoped>
-  @import '../common/scss/common.scss';
-  @import '../common/scss/mixin.scss';
-  $ciclepx:56px;
-  $lItemHeight:86px;
-  $circleml:($lItemHeight - $ciclepx)/2;
-  
-  .mSidebar{
-    position: fixed;
-    left: 0;
-    top: $headerTop;
-    right: 0;
-    bottom: 0;
-    background-color: #F2F2F2;
-    width: $sidebarWidth;
-    float: left;
-    border-left:1px solid #F3F2F2 !important;
-    .itemTitle{
-      height: 50px;
-      line-height: 50px;
-      border-bottom: 1px solid #e8e8e8;
-      color: #B6B6B6;
-      cursor: pointer;
-      .iconStyle{
-        margin-left: 12px;
-        line-height: 50px;
-      }
-      .title{
-        margin-left: 3px;
-      }
-      .arrow{
-        margin-right: 20px;
-        color: #c7c7c7;
-      }
-    }
-    .item{
-      height: 50px;
-      line-height: 50px;
-      border-bottom: 1px solid #e8e8e8;
-      cursor: pointer;
-      .title{
-        margin-left: 24px;
-      }
-      &.selected{
-        color: $selectedColor;
-        background-color: white;
-      }
-    }
-    .fade-enter-active, .fade-leave-active {
-      transition: opacity .3s ease
-    }
-    .fade-enter, .fade-leave-to{
-      opacity: 0;
-    }
+@import "../common/scss/common.scss";
+@import "../common/scss/mixin.scss";
+.sliderbar,.el-menu-vertical-demo:not(.el-menu--collapse) {
+  width: $sidebarWidth;
+  height: 100%;
+  background-color: $mainColor !important;
+}
+.el-menu-item:hover{
+  color: #409EFF !important;
+  i{
+    color: #409EFF !important;
   }
-</style>
-<template>
-  <ul class="mSidebar">
-    <li v-for="(item,index) in mSidebar">
-      <div class="itemTitle" @click="flexToggle(index,'click')">
-        <i class="fa iconStyle left" :class="item.icon"></i>
-        <div class="title left">{{item.title}}</div>
-        <!-- <i class="iconfont icon-arrowdowm arrow right"></i> -->
-      </div>
-      <transition name='fade'>
-        <ul v-show="flex[index]">
-          <li class="item" v-for="(item,index) in item.subs" :class="[item.id==currentId?'selected':'']" @click="textClick(item)">
-            <div class="title left">{{item.text}}</div>
-          </li>
-        </ul>
-      </transition>
-    </li>
-  </ul> 
-</template>
-
-<script>
-var menu = [
-            {icon:'fa-navicon',title:'表单管理',
-              subs:[
-                {id:0,text:'用户表',path:'/userList'},
-                {id:1,text:'审核表',path:'/auditList'},
-                {id:2,text:'订单表',path:'/orderList'},
-                {id:3,text:'反馈表',path:'/coupleBackList'},
-                {id:4,text:'施工汇报表',path:'/reportList'},
-                {id:5,text:'幻灯片管理',path:'/swiperList'},
-                {id:6,text:'广告管理',path:'/advertisementList'}
-              ]
-            }
-           ]
-
-export default {
-  data() {
-    return {
-      currentId: this.$cookie.get('currentId') || 0,
-      itemTitleLen: '',
-      flex: [],
-      isCollapse: false,
-      activeIndex: '',
-      mSidebar:menu
-    }
-  },
-  computed: {
-    onRoutes() {
-      return this.$route.path.replace('/', '')
-    }
-  },
-  created(){
-    this.itemTitleLen = menu.length;//标题的长度
-    this.flex=this.initFlex();
-    var currentTitleIdXG = this.$cookie.get('currentTitleIdXG')||0;
-    var currentId = this.$cookie.get('currentId')||0;
-    console.log(currentTitleIdXG + "," + currentId)
-    console.log("create")
-    if(currentTitleIdXG == 'undefined'){
-      currentTitleIdXG = 0;
-    }
-    this.flexToggle(currentTitleIdXG,"created")
-    console.log("outflexToggle")
-  },
-  mounted() {
-  },
-  methods: {
-    setRouter(currentTitleIdXG,currentId) {
-      console.log(currentId,"-=-=-=-=-=-currentId==-=-=-=-=")
-      this.$router.push(menu[currentTitleIdXG].subs[currentId].path); 
-    },
-    textClick(item) {
-      var currentTitleIdXG = this.$cookie.get('currentTitleIdXG')||0;
-      this.currentId = item.id;
-      this.$cookie.set('currentId',this.currentId);
-      var currentId = this.$cookie.get('currentId');
-      console.log(currentTitleIdXG + "," + currentId)
-      this.setRouter(currentTitleIdXG,currentId);
-    },
-    flexToggle(index,from) {
-      var arr = [];
-      if(from=="created"){
-        console.log(from,"from");
-        this.flex[index] = true;
-      }else if(from=="click"){
-        // 全部先收缩
-        for(var i=0; i<this.itemTitleLen; i++) {
-          arr[i]=false;
-        }
-        // 正常的闭合
-        if(this.flex[index] == true) {
-          this.flex = arr; 
-        }else{
-          arr[index]=true;
-          this.flex = arr;
-          this.$cookie.set('currentTitleIdXG',index);
-          this.$cookie.set('currentId',0);
-          this.currentId = 0;
-        }
-      }
-      var currentTitleIdXG = this.$cookie.get('currentTitleIdXG')||0;
-      var currentId = this.$cookie.get('currentId')||0;
-      console.log(currentTitleIdXG + "," + currentId)
-      this.setRouter(currentTitleIdXG,currentId);
-    },
-    initFlex() {
-      var arr=[]
-      for(var i = 0; i < this.itemTitleLen; i++) {
-        if(i==0) {
-          arr[i] = true;
-        }else{
-          arr[i] = false;
-        }
-      }
-      return arr;
+}
+.el-menu-item i {
+    color: #ffffff;
+}
+.el-menu-item{
+  &.is-active{
+    i{
+      color: #409EFF !important;
     }
   }
 }
+// .sliderbar{
+//   background-color: $mainColor;
+// }
+</style>
+<template>
+  <div class="sliderbar">
+    <el-menu
+      :default-active="activeIndex"
+      class="el-menu-vertical-demo"
+      text-color="#fff"
+      @select="handleSelect"
+      :collapse="isCollapse"
+    >
+      <el-menu-item index="1">
+        <i class="iconfont icon-visitor"></i>
+        <span slot="title">访客库</span>
+      </el-menu-item>
+      <el-menu-item index="2">
+        <i class="iconfont icon-black"></i>
+        <span slot="title">黑名单库</span>
+      </el-menu-item>
+      <el-menu-item index="3">
+        <i class="iconfont icon-lawyer"></i>
+        <span slot="title">律师库</span>
+      </el-menu-item>
+      <!-- <el-menu-item index="4">
+        <i class="iconfont icon-lawyer"></i>
+        <span slot="title">法院库</span>
+      </el-menu-item> -->
+    </el-menu>
+  </div>
+</template>
+
+<script>
+import { getCourtListUrl, ERR_OK, ajax } from "@/api/index";
+export default {
+  data() {
+    return {
+      isCollapse: false,
+      activeIndex: localStorage.getItem("activeIndex")||'1'
+    };
+  },
+  computed: {
+    
+  },
+  created() {
+    this.getCourtList();
+  },
+  mounted() {
+    var that = this;
+    switch(that.activeIndex){
+      case "1": that.$router.push('/visitorList');break;
+      case "2": that.$router.push('/blackList');break;
+      case "3": that.$router.push('/lawyerList');break;
+      // case "4": that.$router.push('/courtList');break;
+      default:that.$router.push('/visitorList');
+    }
+  },
+  methods: {
+    getCourtList() {
+      let that = this;
+      // var url = getVisitorListUrl;
+      var url = getCourtListUrl;
+      var method = "GET";
+      console.log("intoAjax");
+      ajax(url, method, null, function(res) {
+        var result = JSON.parse(res);
+        console.log(result);
+        console.log("code:" + result.code);
+        if (result.code == ERR_OK) {
+          that.courtList = result.data;
+          console.log("courtList",that.courtList)
+          console.log("courtList.len",that.courtList.length)
+          for(var i=0;i<that.courtList.length;i++){
+            that.courtList[i].value = that.courtList[i].CNumber;
+            that.courtList[i].label = that.courtList[i].CName;
+          }
+          localStorage.setItem('courtList', JSON.stringify(that.courtList));
+          var item = {value:"",label:"全部"};
+          that.courtList.unshift(item);
+          localStorage.setItem('courtOptions4search', JSON.stringify(that.courtList));
+          // that.total = result.count;
+          // that.loading = false;
+        }
+      });
+    },
+    handleSelect(key, keyPath) {
+        console.log("key:",key)
+        var that = this;
+        that.activeIndex = (key).toString();
+        localStorage.setItem("activeIndex",that.activeIndex);
+        switch(that.activeIndex){
+          case "1": that.$router.push('/visitorList');break;
+          case "2": that.$router.push('/blackList');break;
+          case "3": that.$router.push('/lawyerList');break;
+          // case "4": that.$router.push('/courtList');break;
+          default:that.$router.push('/visitorList');
+        }
+      }
+  }
+};
 </script>

@@ -97,21 +97,21 @@
 <template>
   <div class="loginWrap container" id="particles-js">
     <div class="login_form">
-      <div class="headButton">西瓜帮你找</div>
-      <img class="logo" src="../../images/logo1.jpg" width="60" height="60">
+      <div class="headButton">上海市法院访客信息联网</div>
+      <img class="logo" src="../../images/courtLogo.png" width="60" height="60">
       <div class="title">欢迎登录</div>
       <div class="inputWrapper">
         <div class="inputBox">
-          <i class="iconfont icon-username iconStyle"></i><input class="input" type="text" name="username" v-model="username" @keyup.enter="tonext(1)" placeholder="用户名/手机号">
+          <i class="iconfont icon-username iconStyle"></i><input class="input" type="text" name="UserName" v-model="UserName" @keyup.enter="tonext(1)" placeholder="用户名">
         </div>
         <div class="inputBox">
-          <i class="iconfont icon-password iconStyle"></i><input class="input" type="password" name="password" v-model="password" @keyup.enter="loginBtn" placeholder="请输入登录密码">
+          <i class="iconfont icon-password iconStyle"></i><input class="input" type="password" name="UPassword" v-model="UPassword" @keyup.enter="loginBtn" placeholder="密码">
         </div>
       </div>
-      <div class="statusBox">
+      <!-- <div class="statusBox">
         <el-checkbox v-model="statusChecked">记住登录状态</el-checkbox>
         <p>忘记密码</p>
-      </div>
+      </div> -->
       <div class="fotButton" @click="loginBtn">登录</div>
     </div>
   </div>
@@ -127,14 +127,15 @@ $(function(){
 });
 
 // import { loginUrl } from '@/api/index'
-import { loginUrl,ERR_OK } from '@/api/index'
+import { loginUrl,ajax,ERR_OK } from '@/api/index'
+import { AESEncrypt } from '@/common/js/utils'
 import axios from 'axios'
 // import pJS from 'pJS'
 export default {
   data: function() {
     return {
-      username: 'admin', //admin
-      password: '123456',//123456
+      UserName: '',
+      UPassword: '',
       ishover: false,
       autofocus: true,
       loginStatus: "",
@@ -156,48 +157,33 @@ export default {
     },
     loginBtn() {
       var that = this;
-      if(!this.username||!this.password) {
-        this.$message('账号或密码不能为空');
+      if(!that.UserName||!that.UPassword) {
+        that.$message('用户名或密码不能为空！');
         return;
       }
+      var method = 'GET';
       var params = {
-        account: this.username,
-        pass_word: this.password,
+        UserName: AESEncrypt(that.UserName),
+        UPassword: AESEncrypt(that.UPassword)
         // remember: this.statusChecked?'1':'0'
       }
-      var url = loginUrl;
-      console.log(params)
-      $.ajax({ 
-        url : url, 
-        type : 'POST', 
-        data : params, 
-        beforeSend:function(){
-          console.log("正在进行，请稍候");
-        },
-        complete: function( xhr,data ){
-          // this.authorization = xhr.getResponseHeader('authorization')
-          
-          // console.log(xhr.getResponseHeader('authorization'),'authorization')
-          // console.log(data,'data')
-        },
-        success : function(res) { 
-          console.log(res.code,'==res.code==')
-          if(res.code===200){
-            localStorage.setItem('token', res.data.token)
-            // that.$cookie.set('currentTitleId',0);
-            that.$router.push('./userList')
-            console.log("成功");
-          }else{
-            console.log("失败");
+      console.log('params',params);
+      ajax(loginUrl,method,params,function(res){
+          var result = JSON.parse(res);
+          console.log(result);
+          console.log("code:" + result.code);
+          if (result.code == ERR_OK) {
+            if(result.count > 0){
+              localStorage.setItem('_UserName',AESEncrypt(that.UserName));
+              that.$message.success('登录成功！');
+              that.$router.push('/visitorList')
+            }else{
+              that.$message.error('用户名或密码错误！');
+            }
+          } else {
+            that.$message.error('用户名或密码错误！');
           }
-        }, 
-        error : function(responseStr) { 
-          that.$message({
-            type: 'info',
-              message: '出错了'
-          });
-        } 
-      });
+        });
       /*this.$axios.post(url,params).then((res)=>{
         var result = res.data;
         console.log(ERR_OK,'--ERR_OK-')

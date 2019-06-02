@@ -7,7 +7,7 @@ export default new Router({
   routes: [
     {
       path: '/',
-      redirect: '/userList'
+      redirect: '/visitorList'
     },
     {
       path: '/login',
@@ -28,10 +28,10 @@ export default new Router({
       }
     },
     {
-      path: '/squill',
-      name: 'demo',
+      path: '/demo2',
+      name: 'demo2',
       component: (resolve) => {
-        import('../pages/demo/demo/squill').then((module) => {
+        import('../pages/demo/demo/demo2').then((module) => {
           resolve(module)
         })
       }
@@ -47,73 +47,37 @@ export default new Router({
       },
       children: [
         {
-          path: '/userList',
-          name: '用户表',
+          path: '/visitorList',
+          name: '访客库',
           component: (resolve) => {
-            import('../pages/user/list').then((module) => {
+            import('../pages/visitor/list').then((module) => {
               resolve(module)
             })
           }
         },
         {
-          path: '/orderList',
-          name: '订单表',
+          path: '/blackList',
+          name: '黑名单库',
           component: (resolve) => {
-            import('../pages/order/list').then((module) => {
+            import('../pages/black/list').then((module) => {
               resolve(module)
             })
           }
         },
         {
-          path: '/orderListOne',
-          name: '订单表2',
+          path: '/lawyerList',
+          name: '律师库',
           component: (resolve) => {
-            import('../pages/order/listOne').then((module) => {
+            import('../pages/lawyer/list').then((module) => {
               resolve(module)
             })
           }
         },
         {
-          path: '/coupleBackList',
-          name: '反馈表',
+          path: '/courtList',
+          name: '法院库',
           component: (resolve) => {
-            import('../pages/coupleBack/list').then((module) => {
-              resolve(module)
-            })
-          }
-        },
-        {
-          path: '/auditList',
-          name: '审核表',
-          component: (resolve) => {
-            import('../pages/audit/list').then((module) => {
-              resolve(module)
-            })
-          }
-        },
-        {
-          path: '/reportList',
-          name: '施工汇报表',
-          component: (resolve) => {
-            import('../pages/report/list').then((module) => {
-              resolve(module)
-            })
-          }
-        },
-        {
-          path: '/swiperList',
-          name: '幻灯片管理',
-          component: (resolve) => {
-            import('../pages/swiper/list').then((module) => {
-              resolve(module)
-            })
-          }
-        },
-        {
-          path: '/advertisementList',
-          name: '广告管理',
-          component: (resolve) => {
-            import('../pages/advertisement/list').then((module) => {
+            import('../pages/court/list').then((module) => {
               resolve(module)
             })
           }

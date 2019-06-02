@@ -3,10 +3,10 @@
   .searchCondition {
     position: relative;
     width: 100%; 
-    min-width: 1020px;
+    min-width: $minWidth;
     padding-left: 10px;
+    margin-bottom: 12px; 
     overflow: hidden;
-    margin-bottom: 6px; 
     display: flex;
     .text{
       flex:auto;
@@ -16,11 +16,14 @@
       display: flex;
       justify-content: space-between;
       align-items: center;
-      padding-top: 8px;
+      padding-top: 9px;
       padding-right: 12px;
       overflow: hidden;
       .btn{
         flex: 1;
+        // .btn_width{
+        //   width: 80px;
+        // }
       }
       .icon{
         flex: 0 0 36px;
@@ -47,7 +50,15 @@
       &:last-child {
         margin-right: 0px;
       }
-      
+    }
+    .element_r {
+      float: right;
+      margin-left: 15px;
+      margin-right: 15px;
+      margin-top: 10px;
+      &:last-child {
+        margin-right: 0px;
+      }
     }
   } 
 </style>
@@ -58,7 +69,7 @@
     </div>
     <div class="btnBox">
       <div class="btn">
-        <el-button class="right" type="primary" size="medium" @click="searchData">筛选</el-button>
+        <el-button class="right btn_width" icon="el-icon-search" type="primary" size="medium" @click="searchData">搜  索</el-button>
       </div>
       <div class="icon" @click="moreBtn" v-if="isShowMoreBtn">
         <i class="el-icon-arrow-right moreIcon right" :class="{iconTransform:isTwoLiine==true}"></i>

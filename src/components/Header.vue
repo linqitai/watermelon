@@ -1,19 +1,20 @@
 <style lang="scss" scoped>
 @import '../common/scss/common.scss';
 .header {
-  position: relative;
   width: 100%;
-  height: $headerTop;
-  line-height: $headerTop;
+  height: $headerHeight;
+  line-height: $headerHeight;
   color: #ffffff;
   // background-color:#11132A;
-  background-color: #434B7E;
+  background-color: $mainColor !important;
   .logoIcon {
     width: 50px;
     height: 50px;
+    margin-top: 15px;
+    margin-left: 24px;
   }
   .manageBox{
-    font-size: 14px;
+    font-size: 32px;
     margin-left: 20px;
     cursor: pointer;
     .iconstyle{
@@ -21,52 +22,66 @@
       padding-right: 3px;
     }
   }
+  .btn-fullscreen{
+      transform: rotate(45deg);
+      margin-right: 5px;
+      font-size: 24px;
+  }
+  .btn-bell, .btn-fullscreen{
+      position: relative;
+      width: 30px;
+      height: 30px;
+      text-align: center;
+      border-radius: 15px;
+      cursor: pointer;
+  }
 }
 </style>
 <template>
   <div class="header">
-    <div class="left"><img class="logoIcon" src="../images/logo1.jpg"></div>
+    <div class="left"><img class="logoIcon" src="../images/courtLogo.png"></div>
     <div class="left manageBox">
-      西瓜帮你找后台管理系统
+      上海市法院联网管理系统
     </div>
-    <!-- <div class="right manage-box margR20" @click="logout">
-      <i class="iconfont iconstyle icon-logout"></i>退出登录
+    <div class="right manage-box margR20" @click="logout">
+      <i class="iconfont iconstyle icon-logout"></i>
+    </div>
+    <!-- <div class="right manage-box margR20 cursor" @click="setting">
+      <i class="iconfont iconstyle icon-setting"></i>
     </div> -->
-    <div class="right manage-box margR20 cursor" @click="setting">
-      <i class="iconfont iconstyle icon-setting"></i> 设置押金金额
-     <!-- 目前的押金金额:{{deposit}} -->
+    <div class="right manage-box margR20 cursor" @click="handleFullScreen">
+      <el-tooltip effect="dark" :content="fullscreen?`取消全屏`:`全屏`" placement="bottom">
+          <i class="iconfont iconstyle icon-fullscreen"></i>
+      </el-tooltip>
     </div>
-    <el-dialog title="设置押金金额" :visible.sync="dialogFormVisible" :append-to-body="true" :fullscreen="false" width="400px">
+    <el-dialog title="修改密码" :visible.sync="dialogFormVisible" :append-to-body="true" :fullscreen="false" width="400px">
       <div class="dialogBody">
         <div class="element">
-          <label class="inline">当前押金金额：{{deposit}}</label>
+          <label class="inline">旧密码：123123</label>
         </div>
         <div class="element margT20">
-          <label class="inline">设置押金金额：</label>
+          <label class="inline">新密码：</label>
           <div class="inline">
-             <el-input v-model="form.deposit" size="medium" placeholder="请输入金额"></el-input>
+             <el-input size="medium" placeholder="请输入金额"></el-input>
           </div>
         </div>
       </div>
       <div slot="footer" class="dialog-footer">
         <el-button class="" @click="dialogFormVisible = false">取 消</el-button>
-        <el-button class="margL12" type="primary" @click="sureBtn">确 定</el-button>
+        <el-button class="margL12" type="primary">确 定</el-button>
       </div>
     </el-dialog>
   </div>
 </template>
 <script>
-import { depositShowUrl,depositSetUrl,ajax,p,ERR_OK } from '@/api/index'
+import { ajax, ERR_OK } from '@/api/index'
 export default {
   data() {
     return {
       role: '',
       username: 'admin',
       icon: 'icon-manage',
-      deposit:"",
-      form: {
-        deposit:""
-      },
+      fullscreen: false,
       dialogFormVisible: false
     }
   },
@@ -80,62 +95,39 @@ export default {
     // this.getDeposit();
   },
   methods: {
+    handleFullScreen(){
+      let element = document.documentElement;
+      if (this.fullscreen) {
+          if (document.exitFullscreen) {
+              document.exitFullscreen();
+          } else if (document.webkitCancelFullScreen) {
+              document.webkitCancelFullScreen();
+          } else if (document.mozCancelFullScreen) {
+              document.mozCancelFullScreen();
+          } else if (document.msExitFullscreen) {
+              document.msExitFullscreen();
+          }
+      } else {
+          if (element.requestFullscreen) {
+              element.requestFullscreen();
+          } else if (element.webkitRequestFullScreen) {
+              element.webkitRequestFullScreen();
+          } else if (element.mozRequestFullScreen) {
+              element.mozRequestFullScreen();
+          } else if (element.msRequestFullscreen) {
+              // IE11
+              element.msRequestFullscreen();
+          }
+      }
+      this.fullscreen = !this.fullscreen;
+  },
     manage(){
       // localStorage.setItem('_lSidebar','manage');
       // this.$emit('childToParentEvent', 'manage')
       this.$router.push('/apply');
     },
     setting() {
-      this.getDeposit();
-      this.dialogFormVisible = true
-    },
-    sureBtn() {
-      let that = this;
-      var params = {
-        "deposit": this.form.deposit,
-        token:localStorage.getItem('token')
-      };
-      // Object.assign(params, params, p);
-      var url = depositSetUrl;
-      console.log(params,"params")
-      var method = 'POST'
-      ajax(url,method,params,function(res){
-        var result = res;
-        console.log(result.code,'--res.status_code--')
-        if(result.code == ERR_OK){
-          // that.tableData = result.data.report_list;
-          // this.deposit = result.data.deposit;
-          that.dialogFormVisible = false;
-          that.$message({
-            type: 'success',
-            message: '操作成功!'
-          });
-        }
-      });
-    },
-    getDeposit(){
-      console.log("getDeposit-=-=-=-=-=-=")
-      let that = this;
-      var params = {
-        token:localStorage.getItem('token')
-      };
-      // Object.assign(params, params, p);
-      var url = depositShowUrl;
-      console.log(params,"params")
-      var method = 'POST'
-      ajax(url,method,params,function(res){
-        var result = res;
-        console.log(result.code,'--res.status_code--')
-        if(result.code == ERR_OK){
-          // that.tableData = result.data.report_list;
-          that.deposit = result.data.deposit;
-        }
-      });
-      var method = "POST";
-      // ajax(url,method,params,that.successed);
-    },
-    successed(res) {
-
+      
     },
     logout() {
       /*window.localStorage.removeItem("authorization");
@@ -148,6 +140,8 @@ export default {
           this.$router.push('/login');
         }
       });*/
+      localStorage.clear();
+      this.$router.push('/login');
     },
     toFirstPage() {
       // this.$router.push('./firstPage')

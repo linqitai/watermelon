@@ -1,80 +1,54 @@
 import $ from 'jquery'
 // import http from './public'
-import qs from 'qs'
-import router from '../router/index'
-// import axios from 'axios'
-// import http from './service'
-export const host = 'http://test.dtc233.com'
+export const host = 'https://test.dtc233.com'
 // const host = '/jz'
-export const ERR_OK = 200
+// export const host_test = 'http://localhost:14262';//本地调试
+// export const host_test = 'http://192.168.1.128:8083';//公司
+export const host_test = 'http://192.168.1.103:8082';//家里
 
-// 登录接口
-export const loginUrl = host + '/api/admin/login';
+export const ERR_OK = 1;
 
-// 课表列表
-export const userListUrl = host + '/api/admin/user/list';
-// 用户封禁操作
-export const banUrl = host + '/api/admin/user/ban';
-// 反馈列表
-export const feedbackUrl = host + '/api/admin/feedback/list';
-// 删除反馈
-export const feedbackDelUrl = host + '/api/admin/feedback/del';
-// 任务列表
-export const taskListUrl = host + '/api/admin/task/list';
-// 任务指派师傅
-export const sendMasterUrl = host + '/api/admin/task/master/send';
-// 手动取消任务
-export const cancelTaskUrl = host + '/api/admin/task/cancel';
-// 手动取消任务
-export const taskCommentUrl = host + '/api/admin/task/comment';
-// 施工汇报
-export const reportListUrl = host + '/api/admin/report/list';
-// 施工汇报删除
-export const reportDelUrl = host + '/api/admin/report/del';
-// 申请师傅的审核列表
-export const masterApplyListUrl = host + '/api/admin/master/apply';
-// 幻灯片列表
-export const swiperListUrl = host + '/api/admin/index/carouse/show';
-// 删除轮播图
-export const delSwiperListUrl = host + '/api/admin/index/carouse/del';
-// 添加轮播图
-export const addSwiperListUrl = host + '/api/admin/index/carouse/add';
-// 图片上传接口
-export const imgUploadUrl = host + '/api/admin/index/img/upload';
-// 轮播图编辑
-export const editSwiperUrl = host + '/api/admin/index/carouse/edit';
-// 审核通过(师傅)
-export const auditPassUrl = host + '/api/admin/master/apply/pass';
-// 拒绝师傅审核申请
-export const refusePassUrl = host + '/api/admin/master/apply/refuse';
-// 设为辣鸡信息并且封禁账号
-export const setRubbishUrl = host + '/api/admin/task/delban';
-// 目前的押金金额
-export const depositShowUrl = host + '/api/admin/deposit/show';
-// 设置押金金额
-export const depositSetUrl = host + '/api/admin/deposit/set';
-// 轮播图是否展示的开关
-export const swiperSwitchUrl = host + '/api/admin/index/carouse/switch';
-// 小程序跳转管理(列表)
-export const miniListUrl = host + '/api/admin/index/mini/list';
-// 小程序跳转管理(编辑)
-export const miniEditUrl = host + '/api/admin/index/mini/edit';
-// 小程序跳转管理(新增)
-export const miniAddUrl = host + '/api/admin/index/mini/add';
-// 小程序跳转管理(删除)
-export const miniDelUrl = host + '/api/admin/index/mini/del';
-// 小程序跳转管理(切换上下架)
-export const miniSwitchUrl = host + '/api/admin/index/mini/switch';
+// 访客表
+export const getVisitorListUrl = host_test + '/api/visitorAccessInf/getList';
+export const addVisitorInfUrl = host_test + '/api/visitorAccessInf/addInf';
+export const editVisitorInfUrl = host_test + '/api/visitorAccessInf/editInf';
+export const deleteInfByIdUrl = host_test + '/api/visitorAccessInf/deleteInfById';
+export const getListByMoreUrl = host_test + '/api/visitorAccessInf/getListByMore';
+
+// 黑名单表
+export const deleteBlacklistInfByIdUrl = host_test + '/api/blacklistInf/deleteInfById';
+export const getBlackListByMoreUrl = host_test + '/api/blacklistInf/getListByMore';
+export const addBlacklist4WebUrl = host_test + '/api/blacklistInf/addInf4Web';
+export const editBlacklist4WebUrl = host_test + '/api/blacklistInf/editInf';
+export const haveThisModelUrl = host_test + '/api/blacklistInf/haveThisModel';
+export const haveThisModel4EditUrl = host_test + '/api/blacklistInf/haveThisModel4Edit';
 
 
-export function ajax(url,method,params,doSuccess) {
+// 律师表
+export const deleteLawyerInfByIdUrl = host_test + '/api/lawyerInf/deleteInfById';
+export const getLawyerByMoreUrl = host_test + '/api/lawyerInf/getListByMore';
+export const addLawyer4WebUrl = host_test + '/api/lawyerInf/addInf4Web';
+export const editLawyer4WebUrl = host_test + '/api/lawyerInf/editInf';
+export const haveLawyerModelUrl = host_test + '/api/lawyerInf/haveThisModel';
+export const haveLawyerModel4EditUrl = host_test + '/api/lawyerInf/haveThisModel4Edit';
+export const getLawyerAllUrl = host_test + '/api/lawyerInf/getListAll';
+
+// 法院表
+export const deleteCourtInfByIdUrl = host_test + '/api/courtInf/deleteInfById';
+export const getCourtListByMoreUrl = host_test + '/api/courtInf/getListByMore';
+export const addCourt4WebUrl = host_test + '/api/courtInf/addInf4Web';
+export const getCourtListUrl = host_test + '/api/courtInf/getList';
+
+// 登录
+export const loginUrl = host_test + '/api/userInf/login';
+
+
+export function ajax(url,method,params,successed) {
   var that = this;
   $.ajax({ 
-    url: url, 
-    type: method,
-    processData: false,
-    // data : JSON.stringify(params), 
-    data: method=='POST'?qs.stringify(params):params, 
+    url : url, 
+    type : method, 
+    data : params, 
     beforeSend: function (XMLHttpRequest) {
       // XMLHttpRequest.setRequestHeader("token", localStorage.getItem('token'));
       // that.progressDialog = true;
@@ -84,18 +58,8 @@ export function ajax(url,method,params,doSuccess) {
       // console.log(xhr.getResponseHeader('authorization'),'authorization')
       // console.log(data,'data')
     },
-    success : function(res) {
-      console.log(res,"====res====")
-      // console.log(res.data.indexOf('登录'),"res.data.indexOf('登录')")
-      if(res.code == 401 && res.data.indexOf('登录')>-1){
-        // that.$router.push('/login')
-        router.replace({
-          path: '/login'
-        })
-      }
-      if (typeof doSuccess == "function") {
-        doSuccess(res);
-      }
+    success : function(res) { 
+      successed(res);
     },
     error : function(responseStr) { 
      console.log(responseStr,"responseStr")

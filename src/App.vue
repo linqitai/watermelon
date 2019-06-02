@@ -11,7 +11,8 @@ export default {
 </script>
 <style lang="scss">
 @import './common/scss/common';
-#app{
-  min-width: 1250px;
+html,body,#app{
+  height: 100%;
+  width: 100%;
 }
 </style>

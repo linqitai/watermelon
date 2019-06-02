@@ -27,7 +27,8 @@ module.exports = {
       'common': resolve('src/common'),
       'components': resolve('src/components'),
       'config': resolve('src/config'),
-      'api': resolve('src/api')
+      'api': resolve('src/api'),
+      'excel': path.resolve(__dirname, '../src/excel'),//新增加一行
     }
   },
   plugins: [

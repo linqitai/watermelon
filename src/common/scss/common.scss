@@ -1,15 +1,14 @@
 $menuColor:#ffffff;
 $borderColor:#ffffff;
 $selectedColor:#3498DB;
-$mainColor:#409EFF;
-$sidebarWidth: 180px;
-$lSidebarWidth:90px;
-$mSidebarWidth:150px;
+$mainColor:#02163b;
+$sidebarWidth: 160px;
 $colorBtnHover:#69c;
 $menuHoverColor:#69c;
 $tableBorderColor:#c7c7c7;
 // 长度单位
-$headerTop:50px;
+$headerHeight:80px;
+$minWidth:700px;
 .width80{width: 80px;}.width100{width: 100px;}.width120{width: 120px;}.width140{width: 140px;}.width160{width: 160px;}.width220{width: 220px;}.width240{width: 240px;}
 .width260{width: 260px;}.width280{width: 280px;}
 .margint{margin-top: 6px;}.marginb{margin-bottom: 6px;}
@@ -17,8 +16,11 @@ $headerTop:50px;
 .margT3{margin-top: 3px;}.margT6{margin-top: 6px;}.margT8{margin-top: 8px;}.margT20{margin-top: 20px;}
 .margL10{margin-left: 10px;}.margL20{margin-left: 20px;}.margL40{margin-left: 40px;}
 .margL100{margin-left: 100px;}.margL200{margin-left: 200px;}
+.paddingT20{padding-top: 30px;}
 .blue{color: #409EFF;}
 .green{color: green;}
+.warn_text{color: rgb(211, 0, 0);}
+.green_text{color: #07961f;}
 .inline{
   display: inline-block;
 }
@@ -33,6 +35,24 @@ $headerTop:50px;
   overflow: hidden;  /*溢出隐藏*/
   text-overflow: ellipsis; /*以省略号...显示*/
   white-space: nowrap;  /*强制不换行*/
+}
+.star_red{
+  color: rgb(221, 0, 0);
+  font-size: 12px;
+}
+.intervals{
+  height: 24px;
+  line-height: 24px;
+}
+.intervals4opetate{
+  height: 48px;
+  line-height: 36px;
+}
+.dialog_body{
+  padding-bottom: 20px;
+}
+.dialog_input_width{
+  width: 70%;
 }
 .mask{
   position: absolute;
@@ -69,6 +89,11 @@ $headerTop:50px;
     bottom: -20px;
   }
 }
+// dialog
+.el-dialog__body{
+  padding:0px 20px !important;
+}
+
 // 表格
 .el-table td, .el-table th{
   padding: 5px 0px;
@@ -83,22 +108,20 @@ $headerTop:50px;
   margin-left: 0 !important;
 }
 .wrapper{
-  padding:12px 20px;
+  padding:12px 12px;
   background-color: white;
 }
 .apply{
-  min-width: 940px;
-  padding:12px 20px;
+  min-width: $minWidth;
+  height: 100%;
   background-color: white;
   .operateTableBox{
-    margin-top: 10px;
-    padding-bottom: 10px;
     padding-left: 10px;
     padding-right: 10px;
-    border: 1px solid #F3F2F2;
-    background-color: #F2F2F2;
+    // padding-top: 6px;
+    background-color: #ffffff;
     .functionBox{
-      padding: 12px 6px 6px 6px;
+      padding: 6px 6px 6px 6px;
     }
   }
 }
@@ -138,8 +161,8 @@ $headerTop:50px;
 
 // 面包屑导航
 .breadcrumbWrapper{
-  border: 1px solid #F3F2F2; 
-  background-color: #F2F2F2;
+  // border: 1px solid #F3F2F2; 
+  background-color: #efeff4;
   .breadcrumb{
     margin-left: 18px;
     height: 40px;
@@ -155,8 +178,9 @@ $headerTop:50px;
 }
 // 分页按钮
 .tableBottom{
-  margin-top: 20px;
+  margin-top: 10px;
   margin-left: 10px;
+  padding-bottom: 20px;
   text-align: left;
 }
 // 分页
@@ -169,9 +193,7 @@ $headerTop:50px;
     }
   }
 }
-.el-radio+.el-radio{
-  margin-left: 15px;
-}
+
 // .dialogModel{
 //   position: fixed;
 //   left: 50%;
